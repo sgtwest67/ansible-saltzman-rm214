@@ -1,0 +1,90 @@
+---    
+- hosts: all_pods
+  connection: network_cli
+  gather_facts: no
+  ignore_errors: yes
+
+  tasks:
+  - name: TFTP BASELINE TO ROUTER
+    block:
+      - name:  CONFIGURE ROUTER TFTP PARAMETERS
+        ios_config:
+          commands:
+            - "ip ssh source-interface G0" 
+            - "ip tftp source-interface G0"
+            - "ip tftp blocksize 8192"
+
+      - name: CREATE ROUTER NETMAN/BASE DIRECTORY
+        ios_command:
+          commands: 
+            - command: "mkdir bootflash:netman"
+              prompt: "[netman]"
+              answer: "\r"
+            - command: "mkdir bootflash:netman/base"
+              prompt: "[netman/base]"
+              answer: "\r"  
+
+      - name: COPY BASELINE TO ROUTER NETMAN DIR
+        ios_command:
+          commands: 
+            - command: "copy tftp://22.17.17.30/{{ location }}-{{ device }}-BASELINE.cfg bootflash:netman/base/base.cfg"
+              prompt: "[confirm]"
+              answer: "\r"  
+
+    when: device == "RTR"
+
+  - name: TFTP BASELINE TO SWITCH
+    block:
+      - name: CONFIGURE SWITCH TFTP PARAMETER
+        ios_config:
+          commands:
+            - "ip ssh source-interface FastEthernet0"
+            - "ip tftp source-interface FastEthernet0"
+            - "ip tftp blocksize 8192"
+
+      - name: CREATE SWITCH NETMAN/BASE DIRECTORY
+        ios_command:
+          commands: 
+            - command: "mkdir flash:netman"
+              prompt: "[netman]"
+              answer: "\r"
+            - command: "mkdir flash:netman/base"
+              prompt: "[netman/base]"
+              answer: "\r"  
+
+      - name: COPY BASELINE TO SWITCH NETMAN DIR
+        ios_command:
+          commands:  
+            - command: "copy tftp://22.17.17.30/{{ location }}-{{ device }}-BASELINE.cfg flash:netman/base/base.cfg"
+              prompt: "[confirm]"
+              answer: "\r"
+
+    when: device == "SW"
+
+  - name: TFTP BASELINE TO MPLS
+    block:
+      - name: CONFIGURE MPLS TFTP PARAMETER
+        ios_config:
+          commands:
+            - "ip ssh source-interface GigabitEthernet0/0"
+            - "ip tftp source-interface GigabitEthernet0/0"
+            - "ip tftp blocksize 8192"
+
+      - name: CREATE MPLS NETMAN/BASE DIRECTORY
+        ios_command:
+          commands: 
+            - command: "mkdir flash:netman"
+              prompt: "[netman]"
+              answer: "\r"
+            - command: "mkdir flash:netman/base"
+              prompt: "[netman/base]"
+              answer: "\r"  
+
+      - name: COPY BASELINE TO MPLS NETMAN DIR
+        ios_command:
+          commands: 
+            - command: "copy tftp://22.17.17.30/{{ location }}-{{ device }}-BASELINE.cfg flash:netman/base/base.cfg"
+              prompt: "[confirm]"
+              answer: "\r"
+
+    when: device == "MPLS"

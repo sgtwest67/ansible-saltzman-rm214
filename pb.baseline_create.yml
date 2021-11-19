@@ -1,0 +1,16 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+#    vars:
+#        path: '/media/sf_TFTP-ROOT/{{ location }}-{{ device }}-BASELINE.cfg'   
+    
+    tasks:           
+      - name: Generate Configuration for NETMAN
+        template:
+  #        src: pe_template/{{ correct_config }}/{{ device }}.j2
+          dest: /media/sf_TFTP-ROOT/{{ location }}-{{ device }}-BASELINE.cfg
+          src: templates/BASE/{{ device }}.j2
+
+
+
