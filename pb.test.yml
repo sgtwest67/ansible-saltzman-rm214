@@ -1,37 +1,59 @@
-     - hosts: all_student_sw_mpls
+     - hosts: all_pods
        connection: network_cli
        gather_facts: no
        ignore_errors: yes
 
        tasks:
         
-        - name: REMOVE FILE PROMPTING 
-          ios_config:
-            lines:
-            - file prompt quiet 
-
-          block:
-            - name: SAVE BASE CONFIG
-              ios_command:
-                commands:   
-                  - command: copy run flash:/netman/base/base.cfg         
-                  - command: mkdir flash:netman
-                #prompt: 'Create directory filename [netman]?'
-                #answer: "\r"
-                  - command: mkdir flash:netman/base
-                #prompt: 'Create directory filename [netman/base]?'
-                #answer: "\r"
-          rescue:
-            - name: CREATE DIRECTORY
-              ios_command:
-                commands:
-                  - command: mkdir flash:netman
-                  - command: mkdir flash:netman/base
-                #prompt: '[confirm]'
-                #answer: "\r"
+        - name:
+          debug:
+            msg: '{{ device }}'
 
 
+  tasks:
+  - name: RESET THE SWITCH TO BASELINE
+    block:
+      - name: COPY SWITCH BASELINE TO STARTUP
+        ios_command:
+          commands:            
+            - command: 'config replace flash:netman/base/base.cfg force'
 
+      - name: RELOAD THE SWITCH
+        ios_command:
+          commands:
+            - command: 'write mem'
+            - command: "reload in 1 \r"
+              prompt: 
+                - "[yes/no]"
+                - "[confirm]"
+              answer: 
+                - "no\r"
+                - "\r"
+              check_all: True
+    when: device == "SW"
+
+  tasks:
+  - name: RESET THE MPLS TO BASELINE
+    block:
+      - name: COPY MPLS BASELINE TO STARTUP
+        ios_command:
+          commands:            
+            - command: 'config replace flash:netman/base/base.cfg force'
+            
+      - name: RELOAD THE MPLS
+        ios_command:
+          commands:
+            - command: 'write mem'
+            - command: "reload in 1 \r"
+              prompt: 
+                - "[yes/no]"
+                - "[confirm]"
+              answer: 
+                - "no\r"
+                - "\r"
+              check_all: True 
+    when: device == "MPLS"
+    
 
 
 

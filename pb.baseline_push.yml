@@ -30,7 +30,6 @@
             - command: "copy tftp://22.17.17.30/{{ location }}-{{ device }}-BASELINE.cfg bootflash:netman/base/base.cfg"
               prompt: "[confirm]"
               answer: "\r"  
-
     when: device == "RTR"
 
   - name: TFTP BASELINE TO SWITCH
