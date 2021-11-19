@@ -1,0 +1,62 @@
+---    
+- hosts: all_pods
+  connection: network_cli
+  gather_facts: no
+  ignore_errors: yes
+
+  tasks:
+  - name: RESET THE ROUTER TO BASELINE
+    block:
+      - name: COPY BASELINE TO STARTUP
+        ios_command:
+          commands:            
+            - command: 'config replace bootflash:netman/base/base.cfg force'
+
+      - name: SAVE and RELOAD THE DEVICE
+        ios_command:
+          commands:
+            - command: 'write mem'
+            - command: "reload in 1 \r"
+              prompt: "[yes/no]"
+              answer: "no\r"
+              prompt: "[confirm]"
+              answer: "\r"  
+    when: device == "RTR"
+
+  tasks:
+  - name: RESET THE SWITCH TO BASELINE
+    block:
+      - name: COPY BASELINE TO STARTUP
+        ios_command:
+          commands:            
+            - command: 'config replace flash:netman/base/base.cfg force'
+
+      - name: RELOAD THE DEVICE
+        ios_command:
+          commands:
+            - command: "reload in 1 \r"
+              prompt: "[yes/no]"
+              answer: "no\r"
+              prompt: "[confirm]"
+              answer: "\r"  
+    when: device == "SW"
+
+  tasks:
+  - name: RESET THE MPLS TO BASELINE
+    block:
+      - name: COPY BASELINE TO STARTUP
+        ios_command:
+          commands:            
+            - command: 'config replace flash:netman/base/base.cfg force'
+            
+      - name: RELOAD THE DEVICE
+        ios_command:
+          commands:
+            - command: "reload in 1 \r"
+              prompt: "[yes/no]"
+              answer: "no\r"
+              prompt: "[confirm]"
+              answer: "\r"  
+    when: device == "MPLS"
+    
+

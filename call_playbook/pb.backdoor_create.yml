@@ -1,0 +1,28 @@
+---
+- hosts: all_student_switches
+  connection: network_cli
+  gather_facts: no
+  ignore_errors: no
+
+  tasks:
+  - name: ADD OSPF 93 TO LAN VLAN 
+    ios_command: 
+      commands:           
+      - command: 'config t'
+      - command: 'interface vlan {{ sw_lan_subnet }}'
+      - command: 'ip ospf 93 area 1'
+        answer: "\r"
+
+- hosts: datacenter_rtr
+  connection: network_cli
+  gather_facts: no
+  ignore_errors: no
+
+  tasks:
+  - name: ACTIVATE ROUTER OSPF 93
+    ios_command: 
+      commands:           
+      - command: 'config t'
+      - command: 'router ospf 93'
+      - command: 'no shut'
+        answer: "\r"

@@ -1,0 +1,169 @@
+Building configuration...
+
+
+Current configuration : 2706 bytes
+!
+! Last configuration change at 15:29:04 UTC Fri Sep 17 2021 by cisco
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name ccnp.lab
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+license udi pid ISR4331/K9 sn FDO21362BDY
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username cisco privilege 15 password 0 cisco
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 10.1.1.1 255.255.255.192
+ ip ospf network point-to-point
+ ip ospf 7 area 0
+!
+interface Loopback11
+ ip address 10.1.11.1 255.255.255.240
+ ip ospf network point-to-point
+ ip ospf 7 area 0
+!
+interface Loopback111
+ ip address 10.18.111.18 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf 18 area 0
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description LINK TO DLS1
+ ip address 10.1.0.101 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf 7 area 0
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.136.136.9 255.255.255.0
+ negotiation auto
+!
+router ospf 7
+ redistribute ospf 18 subnets
+!
+router ospf 18
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^C
+* Challenge_Lab_ENARSI_R1_BUGS - configured by nornir *
+^C
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 15
+ logging synchronous
+ login
+ transport input all
+line vty 16 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end

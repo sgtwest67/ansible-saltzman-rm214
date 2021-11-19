@@ -1,0 +1,36 @@
+---
+     - hosts: all_student_switches
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: no
+
+       tasks:
+        - name: REMOVE OSPF ON VLAN 
+          ios_command: 
+           commands:           
+           - command: 'config t'
+           - command: 'interface vlan {{vlan_id}}'
+           - command: 'no ip ospf 93 area 1'
+           - command: 'no router ospf 93'
+             answer: "\r"
+           - command: do wr
+             prompt: "[confirm]"
+             answer: "\r"
+
+     - hosts: datacenter_rtr
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: no
+
+       tasks:
+        - name: SHUT OSPF 93
+          ios_command: 
+           commands:           
+           - command: 'config t'
+           - command: 'router ospf 93'
+           - command: 'shut'
+             answer: "\r"
+           - command: do wr
+             prompt: "[confirm]"
+             answer: "\r"
+

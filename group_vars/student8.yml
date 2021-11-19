@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R8
+sw_hostname: STUDENT_SW8
+mpls_hostname: MPLS-NODE-8
+#vlan:
+sw_lan_subnet: 108
+sw_router_subnet: 208
+rtr_30x_subnet: 308
+#ip_address:
+student_identifier: 8
+ipv6_student_identifier: '08'
+ipv6_301_identifier: 8
+ip_401_identifier: 0.8
+ip_5xx_identifier: 58
+l10_ip_add: '22.18.10.8'
+g001_ip_add: 138
+dist_mpls_node: 38
+#tunnels:
+tunnel_key_5930x: 18
+student_pe: 8
+modelo: 'NoTIME4$hoWt1m62'
+# END ANSIBLE MANAGED BLOCK

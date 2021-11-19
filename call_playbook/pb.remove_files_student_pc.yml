@@ -1,0 +1,27 @@
+---
+- hosts: all_student_pc
+  gather_facts: no
+  ignore_errors: no
+  vars:
+    ansible_user: student
+    ansible_password: CiscoLabs2018!!
+    ansible_connection: winrm
+    ansible_port: 5985
+    ansible_winrm_transport: ntlm
+
+  tasks:
+    - name: WAIT FOR PC TO BECOME REACHABLE
+      wait_for_connection:
+        delay: 10
+        timeout: 60
+
+    - name: REMOVE NMD_CLASS FOLDER
+      win_file:
+        path: C:\Users\Student\Desktop\NME_CLASS
+        state: absent
+        force: yes
+    - name: REMOVE NETMAN PE RESOURCES FOLDER
+      win_file:
+        path: C:\Users\Student\Desktop\2_NETMAN PE RESOURCES
+        state: absent
+        force: yes

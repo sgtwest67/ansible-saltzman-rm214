@@ -1,0 +1,27 @@
+---
+     - hosts: all_pods
+       connection: network_cli
+       gather_facts: no
+
+       tasks:
+
+        - name: Reset Device Configuration Back To "base.cfg"
+          ios_command:
+            commands:            
+              - config t
+              - command: no aaa new-model
+                prompt: "[confirm]"
+                answer: "\r"
+              - exit
+              - command: 'config replace flash:/ccna/base/base.cfg force'
+      
+
+     - hosts: all_student_switches
+       connection: network_cli
+       gather_facts: no       
+       tasks:
+        - name: Delete ALL Vlans That Exist On Switches
+          ios_vlans:
+            state: deleted
+
+      

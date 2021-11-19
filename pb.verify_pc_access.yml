@@ -1,0 +1,44 @@
+---
+     - hosts: all_student_switches
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: no
+
+       tasks:
+        - name: ADD OSPF 93 TO LAN VLAN 
+          ios_command: 
+           commands:           
+           - command: 'config t'
+           - command: 'interface vlan {{vlan_id}}'
+           - command: 'ip ospf 93 area 1'
+             answer: "\r"
+
+     - hosts: datacenter_rtr
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: no
+
+       tasks:
+        - name: ACTIVATE ROUTER OSPF 93
+          ios_command: 
+           commands:           
+           - command: 'config t'
+           - command: 'router ospf 93'
+           - command: 'no shut'
+             answer: "\r"
+
+     - hosts: all_student_pc
+       gather_facts: no
+       ignore_errors: no
+       vars:
+        ansible_user: student
+        ansible_password: CiscoLabs2018!!
+        ansible_connection: winrm
+        ansible_port: 5985
+        ansible_winrm_transport: ntlm
+
+       tasks:
+       - name: WAIT FOR PC TO BECOME REACHABLE
+         wait_for_connection:
+          delay: 10
+          timeout: 60

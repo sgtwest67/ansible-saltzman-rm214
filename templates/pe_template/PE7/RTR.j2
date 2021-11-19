@@ -1,0 +1,324 @@
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname {{ rtr_hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition NET-A
+ !
+ address-family ipv4
+ exit-address-family
+!
+clock timezone EST -5 0
+clock summer-time EST recurring
+!
+no ip domain lookup
+ip domain name netman-lab.net
+!
+subscriber templating
+! 
+ipv6 unicast-routing
+ipv6 multicast-routing
+!
+flow exporter EXP-1
+ destination 22.18.1{{ ipv6_student_identifier }}.4
+ source GigabitEthernet0/0/0.2{{ ipv6_student_identifier }}
+ ttl 7
+ transport udp 9996
+!
+!
+flow monitor MON-1
+ exporter EXP-1
+ cache timeout inactive 20
+ cache timeout active 180
+ record netflow-original
+!
+key chain NETMAN
+ key 1
+  key-string 7 1444432C3E1401783D
+!
+archive
+ log config
+  logging enable
+  logging size 250
+  hidekeys
+ path tftp://22.17.17.30/student_rtr_{{ student_identifier }}
+ write-memory
+ time-period 2880
+!
+username MENU-USER password MENU-USER
+username MENU-USER autocommand menu ST-{{ student_identifier }}
+!
+track 2 ip sla 2
+!
+track 4 ip sla 4
+!
+track 77 list boolean and
+ object 2 not
+ object 4
+!
+crypto isakmp policy 3
+ encr aes 192
+ hash md5
+ authentication pre-share
+ group 5
+crypto isakmp key netmanistan address ipv6 2001:E42C:23AB:F00D::2{{ ipv6_student_identifier }}9/128
+!
+!
+crypto ipsec transform-set student-set1 esp-aes esp-sha-hmac 
+ mode transport
+!
+!
+crypto ipsec profile lab-pro-2{{ ipv6_student_identifier }}9
+ set security-association lifetime seconds 1500
+ set transform-set student-set1
+!
+!
+interface Loopback0
+ description SOURCE FOR TUNNEL {{ sw_lan_subnet }}
+ no ip address
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:CE33:C{{ sw_lan_subnet }}:1000::1/128
+!
+interface Loopback1
+ ip address 22.19.0.{{ student_identifier }} 255.255.255.255
+!
+interface Tunnel1{{ ipv6_student_identifier }}
+ ip flow monitor MON-1 input
+ ip flow monitor MON-1 output
+ ip address 172.30.{{ student_identifier }}.1 255.255.255.252
+ ip mtu 1344
+ ip access-group DENY_MCS in
+ ip tcp adjust-mss 1360
+ tunnel source Loopback0
+ tunnel mode gre ipv6
+ tunnel destination 2001:CE33:C254:1E01::FF{{ ipv6_301_identifier }}
+ tunnel key 86753{{ ipv6_student_identifier }}
+ tunnel path-mtu-discovery
+!
+interface Tunnel59{{ rtr_30x_subnet }}
+ no ip address
+ ipv6 address FC00::{{ sw_lan_subnet }}:A002/122
+ ipv6 enable
+ ipv6 mtu 1392
+ ipv6 nhrp authentication n3tm@n19
+ ipv6 nhrp network-id 11159{{ rtr_30x_subnet }}
+ ipv6 nhrp nhs FC00::{{ sw_lan_subnet }}:A001 nbma 2001:E42C:23AB:F00D::2{{ ipv6_student_identifier }}9 multicast
+ ospfv3 network point-to-multipoint
+ ospfv3 hello-interval 10
+ ospfv3 dead-interval 40
+ ospfv3 cost 2600
+ ospfv3 flood-reduction
+ ospfv3 {{ rtr_30x_subnet }} ipv6 area {{ student_identifier }}
+ tunnel source GigabitEthernet0/0/0.{{ rtr_30x_subnet }}
+ tunnel mode gre multipoint ipv6
+ tunnel key 201912{{ tunnel_key_5930x }}
+ tunnel path-mtu-discovery
+!
+interface GigabitEthernet0/0/0
+ description PHYSICAL INTERFACE TO RTR_FARM_SWITCH 
+ no ip address
+ negotiation auto
+ no shutdown
+!
+interface GigabitEthernet0/0/0.{{ vlan_value }}
+ encapsulation dot1Q {{ vlan_value }}
+ vrf forwarding NET-A
+ ip address 10.0.0.{{ student_identifier }} 255.255.255.224
+!
+interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ description OSPFv2 LINK TO STUDENT SWITCH {{ student_identifier }}
+ encapsulation dot1Q {{ sw_router_subnet }}
+ ip address 22.18.{{ sw_router_subnet }}.2 255.255.255.248
+ ip policy route-map CONTROL-1
+ ip ospf network point-to-point
+!
+interface GigabitEthernet0/0/0.{{ rtr_30x_subnet }}
+ description POINT-TO-POINT TO NODE_{{ student_identifier }}
+ encapsulation dot1Q {{ rtr_30x_subnet }}
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::1/64
+!
+interface GigabitEthernet0/0/0.4{{ ipv6_student_identifier }}
+ description TRAVERSE LOCAL STRATEGIC NETWORK -> BYPASS TACT. FW
+ encapsulation dot1Q 4{{ ipv6_student_identifier }}
+ ip address 10.4{{ ip_401_identifier }}.254 255.255.255.248
+!
+interface GigabitEthernet0/0/0.5{{ ipv6_student_identifier }}
+ encapsulation dot1Q 5{{ ipv6_student_identifier }}
+ ip address 22.19.{{ ip_5xx_identifier }}.1 255.255.255.224
+!
+interface GigabitEthernet0/0/0.6{{ ipv6_student_identifier }}
+ encapsulation dot1Q 6{{ ipv6_student_identifier }}
+ vrf forwarding NET-A
+ ip address 10.99.{{ student_identifier }}.254 255.255.255.252
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 22.255.0.{{ sw_router_subnet }} 255.255.254.0
+ negotiation auto
+!
+router eigrp STDN{{ student_identifier }}
+ !
+ address-family ipv4 unicast autonomous-system 1{{ ipv6_student_identifier }}
+  !
+  af-interface Tunnel1{{ ipv6_student_identifier }}
+   authentication mode md5
+   authentication key-chain NETMAN
+  exit-af-interface
+  !
+  topology base
+   redistribute ospf 1 metric 1000000 0 255 1 1500
+  exit-af-topology
+  network 172.30.{{ student_identifier }}.0 0.0.0.3
+ exit-address-family
+!
+router ospfv3 {{ rtr_30x_subnet }}
+ router-id 1.0.1.{{ student_identifier }}
+ !
+ address-family ipv4 unicast
+ exit-address-family
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf {{ student_identifier }}
+ router-id 1.0.1.{{ student_identifier }}
+ redistribute eigrp 1{{ ipv6_student_identifier }} subnets
+ redistribute bgp 654{{ ipv6_student_identifier }} subnets
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ network 22.18.{{ sw_router_subnet }}.0 0.0.0.7 area {{ student_identifier }}
+!
+router bgp 654{{ ipv6_student_identifier }}
+ bgp router-id 22.19.0.{{ student_identifier }}
+ bgp log-neighbor-changes
+ network 22.18.1{{ ipv6_student_identifier }}.0 mask 255.255.255.248
+ neighbor 22.19.129.{{ student_identifier }} remote-as 65421
+ neighbor 22.19.129.{{ student_identifier }} ebgp-multihop 3
+ neighbor 22.19.129.{{ student_identifier }} update-source Loopback1
+!
+ip http client source-interface GigabitEthernet0
+ip route 22.19.129.{{ student_identifier }} 255.255.255.255 GigabitEthernet0/0/0.5{{ ipv6_student_identifier }}
+ip route vrf Mgmt-intf 22.17.17.0 255.255.255.224 22.255.1.254
+ip route vrf NET-A 22.17.1.{{ student_identifier }} 255.255.255.255 10.99.{{ student_identifier }}.253
+ip route vrf NET-A 22.17.1.{{ battle_buddy }} 255.255.255.255 10.0.0.{{ battle_buddy }}
+!
+ip scp server enable
+!
+ip access-list standard SNMP-VTY_ACL
+ permit 22.255.0.1
+ permit 22.17.17.0 0.0.0.31
+ permit 22.18.{{ sw_lan_subnet }}.0 0.0.0.7
+!
+ip access-list extended DENY_MCS
+ deny   ip any host 22.18.1{{ ipv6_student_identifier }}.4
+ permit ip any any
+ip sla 2
+ icmp-echo 22.18.1{{ ipv6_student_identifier }}.2 source-interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ frequency 5
+ip sla schedule 2 life forever start-time now
+ip sla 4
+ icmp-echo 22.18.1{{ ipv6_student_identifier }}.4 source-interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ frequency 5
+ip sla schedule 4 life forever start-time now
+ip sla 96
+ icmp-echo 2001:BAD:C0DE:{{ ipv6_301_identifier }}234::1 source-interface GigabitEthernet0/0/0.3{{ ipv6_student_identifier }}
+ frequency 10
+ip sla schedule 96 life forever start-time now
+ip sla 97
+ icmp-jitter 22.17.17.1
+ frequency 5
+ip sla schedule 97 life forever start-time now
+ip sla 98
+ icmp-echo 172.30.1{{ ipv6_student_identifier }}.2 source-interface Tunnel1{{ ipv6_student_identifier }}
+ frequency 5
+ip sla schedule 98 life forever start-time now
+ip sla 99
+ dns labtech.netmanlab.local name-server 100.100.4.101
+ frequency 10
+ip sla schedule 99 life forever start-time now
+!
+logging host 22.18.{{ sw_lan_subnet }}.3
+!
+access-list 101 permit ip host 22.18.1{{ ipv6_student_identifier }}.2 any
+access-list 101 deny   ip any any
+!
+menu ST-{{ student_identifier }} title ^C WELCOME TO THE TEST MENU ^C
+menu ST-{{ student_identifier }} prompt ^C CHOOSE A MENU OPTION ^C
+menu ST-{{ student_identifier }} text 1 VIEW CURRENT OSPF NEIGHBORS
+menu ST-{{ student_identifier }} command 1 show ip ospf neighbor
+menu ST-{{ student_identifier }} text 2 VIEW CURRENT EIGRP NEIGHBORS
+menu ST-{{ student_identifier }} command 2 show ip eigrp neighbor
+menu ST-{{ student_identifier }} text 3 menu-exit
+!
+ipv6 route 2001:CE33:C254:1E01::FF{{ ipv6_301_identifier }}/128 FC00::1{{ ipv6_student_identifier }}:A001
+ipv6 route 2001:E42C:23AB:F00D::/64 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::2
+ipv6 route ::/0 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::2
+!
+route-map CONTROL-1 permit 10 
+ match ip address 101
+ set ip next-hop 10.4{{ ip_401_identifier }}.253
+!
+snmp-server engineID local 1234567890
+snmp-server group GROUP v3 priv 
+snmp-server view NETMAN iso included
+!
+control-plane
+!
+alias configure @o router ospf {{ student_identifier }}
+alias exec RESET tclsh 2020_r1_base.tcl
+alias exec @e show run | sec router eigrp
+!
+line con 0
+ exec-timeout 0 0
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+line vty 5 15
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+!
+ntp master 2
+!
+event manager applet MCS_ACCESS
+ event track 77 state up
+ action 1.0 cli command "enable"
+ action 2.0 cli command "config t"
+ action 3.0 cli command "interface tun1{{ ipv6_student_identifier }}"
+ action 4.0 cli command "no ip access-group DENY_MCS in"
+ action 5.0 syslog msg "REMOVED_ACL_FROM_TUN1{{ ipv6_student_identifier }}"
+event manager applet MCS_NO_ACCESS
+ event track 77 state down
+ action 1.0 cli command "enable"
+ action 2.0 cli command "config t"
+ action 3.0 cli command "interface tun1{{ ipv6_student_identifier }}"
+ action 4.0 cli command "ip access-group DENY_MCS in"
+ action 5.0 syslog msg "ADDED_ACL_TO_TUN1{{ ipv6_student_identifier }}"
+!
+end

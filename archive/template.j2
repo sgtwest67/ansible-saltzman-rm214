@@ -1,0 +1,145 @@
+Building configuration...
+
+
+Current configuration : 2289 bytes
+!
+! Last configuration change at 17:35:44 UTC Thu Aug 12 2021 by instructor
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name ansiblemanaged.net
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+license udi pid ISR4331/K9 sn FDO213625ZW
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+username cisco privilege 15 secret 9 $9$1EYvMqgeWzUxQE$uejsRN14FZ5qu.gNNAxQS55CElW02l1CiAHrNII.CoQ
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.136.136.161 255.255.255.0
+ negotiation auto
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec ^C
+Managed by jonathan rovansek yo
+^C
+banner motd ^C * instructor_r1.baseline - configured via nornirv2 *^C
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+parser config cache interface
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end

@@ -1,0 +1,88 @@
+---
+
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no 
+    vars:
+      room: rm214
+
+    vars_prompt:
+      - name: correct_config
+        prompt: Please enter the correct PE number for comparison.... | PEx | i.e PE1 |
+        private: no
+
+# add vars prompt for battle_buddy 
+    tasks:
+      - pause:
+          prompt: "Please enter the Battle_Buddy Student Number... | 1-20 |" 
+        register: prompt_result
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') or battle_buddy is undefined
+        run_once: True
+        no_log: false
+      - set_fact:
+          battle_buddy: "{{ prompt_result.user_input }}"
+        ignore_errors: True
+
+      - pause:
+          prompt: "Please enter the Assigned Battle_Buddy VLAN | 3-12 |" 
+        register: prompt_result2
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') or battle_buddy is undefined
+        run_once: True
+        no_log: false
+      - set_fact:
+          vlan_value: "{{ prompt_result2.user_input }}"
+        ignore_errors: True
+
+      - name: diff running-config against master config THAT IS SAVED ON THE ANSIBLE VM
+        ios_config:
+          diff_against: intended
+          intended_config: "{{ lookup('template', 'templates/pe_template/{{ correct_config }}/{{ device }}.j2') }}"
+      # USE diff_ignore_lines TO REMOVE ANY DIFFS YOU DONT WANT TO SEE FROM ANSIBLE OUTPUT    
+          diff_ignore_lines:
+            - parser config cache .*
+            - enable secret .*
+            - alias exec RESET.*
+            - no diagnostic .*
+            - diagnostic bootup level minimal
+            - subsciber templating
+            - multilink bundle-name
+            - username .*
+            - ip ssh version 2
+            - no ip route-cache
+            - license udi pid .*
+            - mgcp behavior .*
+            - mgcp profile .*
+            - version .*
+            - platform qfp utilization monitor .*
+#            - interface GigabitEthernet0
+#            - interface GigabitEthernet0/0
+#            - interface FastEthernet0
+            - crypto pki .*
+            - enrollment .*
+            - subject-name .*
+            - revocation-check .*
+            - rsakeypair .*
+            - certificate .*
+            - spanning-tree .*
+            - license .*
+            - file prompt .*
+            - hostname .*
+            - description .*
+            - no platform .*
+            - no aaa .*
+            - ip forward .*
+            - no ip http .*
+            - ip http .*
+            - wsma .*
+            - redundancy
+            - mode none
+            - no service pad
+            - ip forward-protocol nd
+
+
+          backup: yes
+          backup_options:
+#           filename: "{{ ('{{correct_config }}_{{ device }}.txt') }} "
+            dir_path: "backup_diff/{{ room }}/{{ correct_config }}/{{ location }}/{{ device }}/" 
+
+

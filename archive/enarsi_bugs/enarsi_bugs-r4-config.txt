@@ -1,0 +1,175 @@
+Building configuration...
+
+
+Current configuration : 3018 bytes
+!
+! Last configuration change at 16:07:02 UTC Fri Sep 17 2021 by cisco
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name ccnp.lab
+ip dhcp excluded-address 172.31.1.1 172.31.1.156
+!
+ip dhcp pool PC2
+ network 172.31.1.0 255.255.255.0
+ default-router 17.31.1.1 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+ipv6 unicast-routing
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+license udi pid ISR4331/K9 sn FDO21370C71
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username cisco privilege 15 secret 9 $9$1EYvMqgeWzUxQE$uejsRN14FZ5qu.gNNAxQS55CElW02l1CiAHrNII.CoQ
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback4
+ ip address 172.24.4.4 255.255.255.240
+ ipv6 address FE80::44 link-local
+ ospfv3 network point-to-point
+ ospfv3 26 ipv4 area 1
+!
+interface Loopback44
+ ip address 172.24.44.4 255.255.255.240
+ ipv6 address FE80::44 link-local
+ ospfv3 network point-to-point
+ ospfv3 26 ipv4 area 1
+!
+interface GigabitEthernet0/0/0
+ description LINK TO R3
+ ip address 172.30.34.4 255.255.255.248
+ negotiation auto
+ ipv6 address FE80::44 link-local
+ ospfv3 26 ipv4 area 1
+!
+interface GigabitEthernet0/0/1
+ description LINK TO PC2
+ ip address 172.31.1.1 255.255.255.0
+ negotiation auto
+ ipv6 address FE80::44 link-local
+ ospfv3 26 ipv4 area 1
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.136.136.12 255.255.255.0
+ negotiation auto
+!
+router ospfv3 26
+ !
+ address-family ipv4 unicast
+ exit-address-family
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^C
+* Challenge_Lab_ENARSI_R4_BUGS - configured by nornir *
+^C
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+parser config cache interface
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 15
+ logging synchronous
+ login
+ transport input all
+line vty 16 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end

@@ -1,0 +1,23 @@
+---
+- hosts: all_student_pods
+  gather_facts: no
+  ignore_errors: no
+  connection: network_cli
+
+  vars:
+    regex_var: .*
+
+  tasks:
+    - name: LAB RESET TO BASELINE 
+      ios_command: 
+       commands:
+         - command: RESET
+           check_all: True
+           prompt: 
+            - '{{ regex_var }}'
+            - '[startup-config]?'
+            - '[confirm]'
+           answer: 
+            - "123456789"
+            - "\r"
+            - "\r"

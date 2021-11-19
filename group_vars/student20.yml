@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R20
+sw_hostname: STUDENT_SW20
+mpls_hostname: MPLS-NODE-20
+#vlan:
+sw_lan_subnet: 120
+sw_router_subnet: 220
+rtr_30x_subnet: 320
+#ip_address:
+student_identifier: 20
+ipv6_student_identifier: '20'
+ipv6_301_identifier: 20
+ip_401_identifier: 2.0
+ip_5xx_identifier: 70
+l10_ip_add: '22.18.20.10'
+g001_ip_add: 150
+dist_mpls_node: 50
+#tunnels:
+tunnel_key_5930x: 30
+student_pe: 20
+modelo: 'R@wRo@$t3D@lmndz'
+# END ANSIBLE MANAGED BLOCK

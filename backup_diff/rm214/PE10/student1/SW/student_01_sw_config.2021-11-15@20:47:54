@@ -1,0 +1,345 @@
+Building configuration...
+
+Current configuration : 7449 bytes
+!
+! Last configuration change at 16:59:02 UTC Mon Nov 15 2021 by cisco
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname STUDENT_SW1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$98FC$nr0PI.GzPq7MeQ/iTyCht.
+!
+username cisco privilege 15 secret 5 $1$PNI6$mfAZnI4CuLeAjmUrSGsW5.
+no aaa new-model
+system mtu routing 1500
+ip routing
+no ip cef optimize neighbor resolution
+!
+ip dhcp excluded-address 22.18.101.1 22.18.101.2
+!
+ip dhcp pool STUDENT_LAN
+ network 22.18.101.0 255.255.255.248
+ default-router 22.18.101.1 
+ dns-server 100.100.4.100 
+ domain-name netman-lab.net
+!
+!
+no ip domain-lookup
+ip domain-name netman-lab.net
+vtp domain switch
+vtp mode transparent
+!
+!
+key chain NETMAN
+ key 1
+  key-string 7 115A48222502205F1D
+!
+crypto pki trustpoint TP-self-signed-962203904
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-962203904
+ revocation-check none
+ rsakeypair TP-self-signed-962203904
+!
+!
+crypto pki certificate chain TP-self-signed-962203904
+ certificate self-signed 01
+  30820229 30820192 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 39363232 30333930 34301E17 0D303630 31303230 30303133 
+  305A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F 
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3936 32323033 
+  39303430 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100 
+  8FFE5B07 815A2F52 1848F383 AECCC8DB A88806C6 3CD008D1 7D266807 668EB86F 
+  0F46BF07 B1CAB8CF D1866046 17A65FC5 639BADA0 BA01B425 586D2437 B20B52C7 
+  87A40A53 972C5156 C3338929 371F0426 EC6C1E6D D7FCD77F 4B641EA4 0482D060 
+  4443EBBE 52A2271F 77475497 F9494346 8C31C5CC 84EFBC27 3CE86274 2C94FC55 
+  02030100 01A35330 51300F06 03551D13 0101FF04 05300301 01FF301F 0603551D 
+  23041830 168014A4 47677839 EB3B4D94 7715BC6B 34C21D45 5DCDBD30 1D060355 
+  1D0E0416 0414A447 677839EB 3B4D9477 15BC6B34 C21D455D CDBD300D 06092A86 
+  4886F70D 01010505 00038181 004C7197 AC4DFBA2 C3033D22 457D8287 980DDC62 
+  5B459BBD DBF74F45 915E2FDA F5C7D648 EFD7B0EB 8B771A03 AF9F3D82 81C5F21E 
+  EC78DC34 CF463D62 D254E1A2 DC3DC9E0 7986D5F4 7DB73DF1 B3BA2E6F B077FC8F 
+  A66EA999 9E5CCA33 DD21186C 058379F2 ACD4BDBF 84D5605E 98074BD2 E841B4FD 
+  6FD52DFB 38325E32 2E4360EB 53
+  	quit
+license boot level ipservices
+!
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+!
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+vlan 2,101,201 
+!
+vlan 601
+ name vrf_NET-A
+!
+ip tftp source-interface Vlan101
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 22.17.1.1 255.255.255.255
+ ip ospf network point-to-point
+ ip ospf 1 area 1
+!
+interface Tunnel600
+ ip address 10.60.0.1 255.255.255.0
+ tunnel source Loopback0
+ tunnel destination 22.17.1.2
+!
+interface FastEthernet0
+ description MGMT LINK TO CORE SWITCH
+ vrf forwarding Mgmt-vrf
+ ip address 22.255.0.101 255.255.254.0
+ no ip route-cache
+!
+interface GigabitEthernet0/1
+ description TRUNK TO SWITCH_FARM_SWITCH PORT 1
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 101,201,601
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet0/3
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/4
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/5
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/6
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/7
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/8
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/9
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/10
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/11
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/12
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/13
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/14
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/15
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/16
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/17
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/18
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/19
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/20
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/21
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/22
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/23
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/24
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/1
+!
+interface GigabitEthernet1/2
+!
+interface GigabitEthernet1/3
+!
+interface GigabitEthernet1/4
+!
+interface TenGigabitEthernet1/1
+!
+interface TenGigabitEthernet1/2
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan101
+ description STUDENT LAN GATEWAY
+ ip address 22.18.101.1 255.255.255.248
+ ip ospf 1 area 1
+!
+interface Vlan201
+ ip address 22.18.201.1 255.255.255.248
+ ip ospf network point-to-point
+ ip ospf 1 area 1
+!
+interface Vlan601
+ ip address 10.99.1.253 255.255.255.252
+!
+!
+router eigrp 100
+ network 10.60.0.0 0.0.0.255
+ network 22.18.101.0 0.0.0.7
+!
+router ospf 1
+ passive-interface Vlan101
+!
+!
+ip http server
+ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 22.18.201.2
+ip route 22.17.1.2 255.255.255.255 10.99.1.254
+ip route 22.20.31.0 255.255.255.248 10.99.1.254
+ip route vrf Mgmt-vrf 22.17.17.30 255.255.255.255 22.255.1.254
+!
+ip access-list standard SNMP-VTY_ACL
+ permit 22.255.0.1
+ permit 22.17.17.0 0.0.0.31
+ permit 22.18.101.0 0.0.0.7
+!
+logging host 22.18.101.3
+!
+!
+snmp-server engineID local 1234567890
+snmp-server group ops v3 priv 
+snmp-server view VIEW iso included
+snmp-server community READONLY RO SNMP-VTY_ACL
+snmp-server community READWRITE RW SNMP-VTY_ACL
+snmp ifmib ifindex persist
+!
+alias exec RESET tclsh 2020_sw1_base.tcl
+!
+line con 0
+line vty 0 4
+ access-class SNMP-VTY_ACL in vrf-also
+ login local
+ transport input telnet ssh
+line vty 5 15
+ access-class SNMP-VTY_ACL in vrf-also
+ login local
+ transport input telnet ssh
+!
+ntp server 22.18.201.2
+end

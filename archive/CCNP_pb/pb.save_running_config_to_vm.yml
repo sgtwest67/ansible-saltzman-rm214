@@ -1,0 +1,27 @@
+---
+
+
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+
+    vars_prompt:
+      - name: save_config
+        prompt: --------Please type name of file--------
+        private: no
+
+    tasks:
+
+      - name: SEND SHOW COMPARE CONFIGS TO GOOD WORKING CONFIGS
+        ios_command:
+          commands: show running-config 
+        register: output
+
+      - name: STORE COMPARE_CONFIG_DATA
+        copy:
+          content: "{{output['stdout'][0]}}"
+          dest: ./backup_running/{{ location }}/{{ save_config }}-{{ device }}-config.txt
+ 
+
+# A“+” sign means this command is present in the “running-config” but not in the “STARTUP-CONFIG”
+# A “-” sign means this command is present in the “STARTUP-CONFIG” but not in the “running-config”

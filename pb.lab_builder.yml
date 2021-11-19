@@ -1,0 +1,5 @@
+---
+# CREATE BACKDOOR TO STUDENT PC
+- import_playbook: ./call_playbook/pb.backdoor_create.yml
+# COPY NME FILES TO STUDENT PC
+- import_playbook: ./call_playbook/pb.copy_files_student_pc.yml

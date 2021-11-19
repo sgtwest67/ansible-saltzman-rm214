@@ -1,0 +1,18 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+
+    vars: 
+#        what_plants_crave: "{{ file_name }}_{{ device }}"
+         what_plants_crave: "{{ location }}"
+    tasks:
+#    - name: create  file
+#      file:
+#        state: directory
+#        path: ./host_vars/{{ what_plants_crave }}/
+
+    - name: create  file
+      file:
+        state: touch
+        path: ./group_vars/{{ location }}.yml

@@ -1,0 +1,40 @@
+---
+     - hosts: all_pods
+       connection: network_cli
+       gather_facts: no
+
+       tasks:
+        - name: Reset device configuration back base.cfg
+          ios_command:
+            commands:    
+              - command: 'config replace flash:/ccnp/base/base.cfg force'
+          tags: reset
+
+     - hosts: all_student_switches
+       connection: network_cli
+       gather_facts: no       
+       tasks:
+        - name: Delete ALL Vlans
+          ios_vlans:
+            state: deleted
+          tags: delete_vlan
+
+
+     - hosts: all_pods
+       connection: network_cli
+       gather_facts: no
+                 
+       vars_prompt:
+         - name: lab_name
+           prompt: Please enter one of following labs || enarsi_challenge_bugs || x.x.x.x ||
+           private: no
+
+       tasks:
+
+        - name: Load TSHOOT ({{ lab_name }}) Configuration
+          ios_config:
+             src: ./configs/{{ lab_name }}/{{ lab_name }}-{{ device }}-config.txt   
+        
+        - name: save running-config
+          ios_config:
+            save_when: modified

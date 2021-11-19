@@ -1,0 +1,36 @@
+---
+     - hosts: all_student_routers
+       connection: network_cli
+       gather_facts: no
+
+       tasks:
+
+        - name: SEND COMMANDS 
+          ios_command:
+            commands:            
+              - config t
+              - command: alias exec reset.soft config replace bootflash:/ccna/base/base.cfg force
+              - command: do copy run bootflash:/ccna/base/base.cfg
+                prompt: "[confirm]"
+                answer: "\r"
+              - command: do wr
+                prompt: "[confirm]"
+                answer: "\r"
+
+     - hosts: all_student_switches
+       connection: network_cli
+       gather_facts: no
+
+       tasks:
+
+        - name: SEND COMMANDS 
+          ios_command:
+            commands:            
+              - config t
+              - command: alias exec reset.soft config replace flash:/ccna/base/base.cfg force
+              - command: do copy run flash:/ccna/base/base.cfg 
+                prompt: "[confirm]"
+                answer: "\r"
+              - command: do wr
+                prompt: "[confirm]"
+                answer: "\r"

@@ -1,0 +1,15 @@
+---
+- hosts: all_student_pods
+  gather_facts: no
+  ignore_errors: no
+  connection: network_cli
+
+  tasks:
+   - name: LAB RESET TO BASELINE 
+     ios_command: 
+      commands:           
+      - reset.soft
+      authorize:
+
+   - debug:
+       msg: "Device {{ inventory_hostname }} has been set to the baseline config." 

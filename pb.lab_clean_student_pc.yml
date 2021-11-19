@@ -1,0 +1,7 @@
+---
+# CREATE BACKDOOR TO STUDENT PC
+- import_playbook: ./call_playbook/pb.backdoor_create.yml
+# REMOVE NME FILES FROM STUDENT PC
+- import_playbook: ./call_playbook/pb.remove_files_student_pc.yml
+# REMOVE BACKDOOR TO STUDENT PC
+- import_playbook: ./call_playbook/pb.backdoor_teardown.yml

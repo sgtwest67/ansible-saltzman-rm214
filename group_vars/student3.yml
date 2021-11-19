@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R3
+sw_hostname: STUDENT_SW3
+mpls_hostname: MPLS-NODE-3
+#vlan:
+sw_lan_subnet: 103
+sw_router_subnet: 203
+rtr_30x_subnet: 303
+#ip_address:
+student_identifier: 3
+ipv6_student_identifier: '03'
+ipv6_301_identifier: 3
+ip_401_identifier: 0.3
+ip_5xx_identifier: 53
+l10_ip_add: '22.18.10.3'
+g001_ip_add: 133
+dist_mpls_node: 33
+#tunnels:
+tunnel_key_5930x: 13
+student_pe: 3
+modelo: 'NoTIME4$hoWt1m32'
+# END ANSIBLE MANAGED BLOCK

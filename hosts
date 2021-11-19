@@ -1,0 +1,538 @@
+# This is a hosts file for NETMAN
+# Begin Individual Target Client Identification
+
+[all:vars]
+ansible_network_os=ios
+ansible_connection=network_cli
+ansible_user=cisco
+ansible_ssh_pass=cisco
+ansible_telnet_pass=cisco
+
+[instructor:vars]
+ansible_network_os=ios
+ansible_user=netadmin
+ansible_ssh_pass=123456789
+location=instructor
+
+#### Student_VARS
+
+[student1:vars]
+location=student1
+
+
+[student2:vars]
+location=student2
+vlan_id=102
+
+[student3:vars]
+location=student3
+vlan_id=103
+
+[student4:vars]
+location=student4
+vlan_id=104
+
+[student5:vars]
+location=student5
+vlan_id=105
+
+[student6:vars]
+location=student6
+vlan_id=106
+
+[student7:vars]
+location=student7
+vlan_id=107
+
+[student8:vars]
+location=student8
+vlan_id=108
+
+[student9:vars]
+location=student9
+vlan_id=109
+
+[student10:vars]
+location=student10
+vlan_id=110
+
+[student11:vars]
+location=student11
+vlan_id=111
+
+[student12:vars]
+location=student12
+vlan_id=112
+
+[student13:vars]
+location=student13
+vlan_id=113
+
+[student14:vars]
+location=student14
+vlan_id=114
+
+[student15:vars]
+location=student15
+vlan_id=115
+
+[student16:vars]
+location=student16
+vlan_id=116
+
+[student17:vars]
+location=student17
+vlan_id=117
+
+[student18:vars]
+location=student18
+vlan_id=118
+
+[student19:vars]
+location=student19
+vlan_id=119
+
+[student20:vars]
+location=student20
+vlan_id=120
+
+
+###Student PC_VARS
+
+[student02_pc:vars]
+location=student02_pc
+student_pe=2
+
+[student03_pc:vars]
+location=student03_pc
+student_pe=3
+
+[student04_pc:vars]
+location=student04_pc
+student_pe=4
+
+[student05_pc:vars]
+location=student05_pc
+student_pe=5
+
+[student06_pc:vars]
+location=student06_pc
+student_pe=6
+
+[student07_pc:vars]
+location=student07_pc
+student_pe=7
+
+[student08_pc:vars]
+location=student08_pc
+student_pe=8
+
+[student09_pc:vars]
+location=student09_pc
+student_pe=9
+
+[student10_pc:vars]
+location=student10_pc
+student_pe=10
+
+[student11_pc:vars]
+location=student11_pc
+student_pe=11
+
+[student12_pc:vars]
+location=student12_pc
+student_pe=12
+
+[student13_pc:vars]
+location=student13_pc
+student_pe=13
+
+[student14_pc:vars]
+location=student14_pc
+student_pe=14
+
+[student15_pc:vars]
+location=student15_pc
+student_pe=15
+
+[student16_pc:vars]
+location=student16_pc
+student_pe=16
+
+[student17_pc:vars]
+location=student17_pc
+student_pe=17
+
+[student18_pc:vars]
+location=student18_pc
+student_pe=18
+
+[student19_pc:vars]
+location=student19_pc
+student_pe=19
+
+[student20_pc:vars]
+location=student20_pc
+student_pe=20
+
+###Student_HOSTS
+
+[student01_pc]
+student_01_pc ansible_host=22.18.101.3
+
+[student02_pc]
+student_02_pc ansible_host=22.18.102.3
+
+[student03_pc]
+student_03_pc ansible_host=22.18.103.3
+
+[student04_pc]
+student_04_pc ansible_host=22.18.104.3
+
+[student05_pc]
+student_05_pc ansible_host=22.18.105.3
+
+[student06_pc]
+student_06_pc ansible_host=22.18.106.3
+
+[student07_pc]
+student_07_pc ansible_host=22.18.107.3
+
+[student08_pc]
+student_08_pc ansible_host=22.18.108.3
+
+[student09_pc]
+student_09_pc ansible_host=22.18.109.3
+
+[student10_pc]
+student_10_pc ansible_host=22.18.110.3
+
+[student11_pc]
+student_11_pc ansible_host=22.18.111.3
+
+[student12_pc]
+student_12_pc ansible_host=22.18.112.3
+
+[student13_pc]
+student_13_pc ansible_host=22.18.113.3
+
+[student14_pc]
+student_14_pc ansible_host=22.18.114.3
+
+[student15_pc]
+student_15_pc ansible_host=22.18.115.3
+
+[student16_pc]
+student_16_pc ansible_host=22.18.116.3
+
+[student17_pc]
+student_17_pc ansible_host=22.18.117.3
+
+[student18_pc]
+student_18_pc ansible_host=22.18.118.3
+
+[student19_pc]
+student_19_pc ansible_host=22.18.119.3
+
+[student20_pc]
+student_20_pc ansible_host=22.18.120.3
+
+###Student HOSTS
+
+[instructor]
+datacenter_rtr ansible_host=22.255.0.21
+
+[student1]
+student_01_rtr ansible_host=22.255.0.201
+student_01_sw ansible_host=22.255.0.101
+student_01_mpls ansible_host=22.255.0.31
+
+[student2]
+student_02_rtr ansible_host=22.255.0.202
+student_02_sw ansible_host=22.255.0.102
+student_02_mpls ansible_host=22.255.0.32
+
+[student3]
+student_03_rtr ansible_host=22.255.0.203
+student_03_sw ansible_host=22.255.0.103
+student_03_mpls ansible_host=22.255.0.33
+
+[student4]
+student_04_rtr ansible_host=22.255.0.204
+student_04_sw ansible_host=22.255.0.104
+student_04_mpls ansible_host=22.255.0.34
+
+[student5]
+student_05_rtr ansible_host=22.255.0.205
+student_05_sw ansible_host=22.255.0.105
+student_05_mpls ansible_host=22.255.0.35
+
+[student6]
+student_06_rtr ansible_host=22.255.0.206
+student_06_sw ansible_host=22.255.0.106
+student_06_mpls ansible_host=22.255.0.36
+
+[student7]
+student_07_rtr ansible_host=22.255.0.207
+student_07_sw ansible_host=22.255.0.107
+student_07_mpls ansible_host=22.255.0.37
+
+[student8]
+student_08_rtr ansible_host=22.255.0.208
+student_08_sw ansible_host=22.255.0.108
+student_08_mpls ansible_host=22.255.0.38
+
+[student9]
+student_09_rtr ansible_host=22.255.0.209
+student_09_sw ansible_host=22.255.0.109
+student_09_mpls ansible_host=22.255.0.39
+
+[student10]
+student_10_rtr ansible_host=22.255.0.210
+student_10_sw ansible_host=22.255.0.110
+student_10_mpls ansible_host=22.255.0.40
+
+[student11]
+student_11_rtr ansible_host=22.255.0.211
+student_11_sw ansible_host=22.255.0.111
+student_11_mpls ansible_host=22.255.0.41
+
+[student12]
+student_12_rtr ansible_host=22.255.0.212
+student_12_sw ansible_host=22.255.0.112
+student_12_mpls ansible_host=22.255.0.42
+
+[student13]
+student_13_rtr ansible_host=22.255.0.213
+student_13_sw ansible_host=22.255.0.113
+student_13_mpls ansible_host=22.255.0.43
+
+[student14]
+student_14_rtr ansible_host=22.255.0.214
+student_14_sw ansible_host=22.255.0.114
+student_14_mpls ansible_host=22.255.0.44
+
+[student15]
+student_15_rtr ansible_host=22.255.0.215
+student_15_sw ansible_host=22.255.0.115
+student_15_mpls ansible_host=22.255.0.45
+
+[student16]
+student_16_rtr ansible_host=22.255.0.216
+student_16_sw ansible_host=22.255.0.116
+student_16_mpls ansible_host=22.255.0.46
+
+[student17]
+student_17_rtr ansible_host=22.255.0.217
+student_17_sw ansible_host=22.255.0.117
+student_17_mpls ansible_host=22.255.0.47
+
+[student18]
+student_18_rtr ansible_host=22.255.0.218
+student_18_sw ansible_host=22.255.0.118
+student_18_mpls ansible_host=22.255.0.48
+
+[student19]
+student_19_rtr ansible_host=22.255.0.219
+student_19_sw ansible_host=22.255.0.119
+student_19_mpls ansible_host=22.255.0.49
+
+[student20]
+student_20_rtr ansible_host=22.255.0.220
+student_20_sw ansible_host=22.255.0.120
+student_20_mpls ansible_host=22.255.0.50
+
+###
+
+# Begin Group Identification
+
+# All devices for one specific student
+[student_01_pod]
+  student_01_rtr
+  student_01_sw
+  student_01_mpls
+  student_01_pc
+
+[student_02_pod]
+  student_02_rtr
+  student_02_sw
+  student_02_mpls
+
+[student_03_pod]
+  student_03_rtr
+  student_03_sw
+  student_03_mpls
+
+[student_04_pod]
+  student_04_rtr
+  student_04_sw
+  student_04_mpls
+
+[student_05_pod]
+  student_05_rtr
+  student_05_sw
+  student_05_mpls
+
+[student_06_pod]
+  student_06_rtr
+  student_06_sw
+  student_06_mpls
+
+[student_07_pod]
+  student_07_rtr
+  student_07_sw
+  student_07_mpls
+
+[student_08_pod]
+  student_08_rtr
+  student_08_sw
+  student_08_mpls
+
+[student_09_pod]
+  student_09_rtr
+  student_09_sw
+  student_09_mpls
+
+[student_10_pod]
+  student_10_rtr
+  student_10_sw
+  student_10_mpls
+
+[student_11_pod]
+  student_11_rtr
+  student_11_sw
+  student_11_mpls
+
+[student_12_pod]
+  student_12_rtr
+  student_12_sw
+  student_12_mpls
+
+[student_13_pod]
+  student_13_rtr
+  student_13_sw
+  student_13_mpls
+
+[student_14_pod]
+  student_14_rtr
+  student_14_sw
+  student_14_mpls
+
+[student_15_pod]
+  student_15_rtr
+  student_15_sw
+  student_15_mpls
+
+[student_16_pod]
+  student_16_rtr
+  student_16_sw
+  student_16_mpls
+
+[student_17_pod]
+  student_17_rtr
+  student_17_sw
+  student_17_mpls
+
+[student_18_pod]
+  student_18_rtr
+  student_18_sw
+  student_18_mpls
+
+[student_19_pod]
+  student_19_rtr
+  student_19_sw
+  student_19_mpls
+
+[student_20_pod]
+  student_20_rtr
+  student_20_sw
+  student_20_mpls
+
+[instructor_pod]
+  instructor_01_rtr
+  instructor_01_sw
+  instructor_01_mpls
+
+
+# All classroom pods
+[all_pods:children]
+  instructor
+  student1
+  student2
+  student3
+  student4
+  student5
+  student6
+  student7
+  student8
+  student9
+  student10
+  student11
+  student12
+  student13
+  student14
+  student15
+  student16
+  student17
+  student18
+  student19
+  student20
+
+
+# All student pod routers
+[all_student_routers]
+  student_[01:20]_rtr
+
+# All instructor pod routers
+[instructor_routers]
+  instructor_01_rtr
+
+# All classroom pod routers
+[all_routers:children]
+  all_student_routers
+  instructor_routers
+
+# All switches
+[all_student_switches]
+  student_[01:20]_sw
+
+# All MPLS switches
+[all_student_mpls]
+  student_[01:20]_mpls
+
+# All Student Combined switches
+[all_student_sw_mpls]
+  student_[01:20]_mpls
+  student_[01:20]_sw
+
+# All student devices
+[all_student_pods:children]
+  all_student_sw_mpls
+  all_student_routers
+  
+# All classroom pod switches
+[all_switches:children]
+  all_student_switches
+
+# All student computers
+[all_student_pc:children]
+  student01_pc
+  student02_pc
+  student03_pc
+  student04_pc
+  student05_pc
+  student06_pc
+  student07_pc
+  student08_pc
+  student09_pc
+  student10_pc
+  student11_pc
+  student12_pc
+  student13_pc
+  student14_pc
+  student15_pc
+  student16_pc
+  student17_pc
+  student18_pc
+  student19_pc
+  student20_pc

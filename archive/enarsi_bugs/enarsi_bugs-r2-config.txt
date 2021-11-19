@@ -1,0 +1,164 @@
+Building configuration...
+
+
+Current configuration : 2655 bytes
+!
+! Last configuration change at 15:29:11 UTC Fri Sep 17 2021 by cisco
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name ccnp.lab
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+license udi pid ISR4331/K9 sn FDO21362GEY
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username cisco privilege 15 secret 9 $9$1EYvMqgeWzUxQE$uejsRN14FZ5qu.gNNAxQS55CElW02l1CiAHrNII.CoQ
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback2
+ ip address 10.2.2.2 255.255.255.128
+!
+interface Loopback22
+ ip address 10.2.22.2 255.255.255.128
+!
+interface GigabitEthernet0/0/0
+ description LINK TO PC1
+ ip address 10.2.98.50 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description LINK TO DLS2
+ ip address 10.2.0.202 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.136.136.10 255.255.255.0
+ negotiation auto
+!
+!
+router eigrp LAB
+ !
+ address-family ipv4 unicast autonomous-system 98
+  !
+  topology base
+  exit-af-topology
+  network 0.0.0.0
+ exit-address-family
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^C
+* Challenge_Lab_ENARSI_R2_BUGS - configured by nornir *
+^C
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+parser config cache interface
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 15
+ logging synchronous
+ login
+ transport input all
+line vty 16 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end

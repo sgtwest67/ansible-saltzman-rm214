@@ -1,0 +1,70 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+
+#CREATE CCNA BASE CONFIG WITH ONLY IP ADDRESS & USERNAME FOR TELNET ACCESS 
+#CREATES CCNP BASE CONFIG WITH SSH AND TELNET ACCESS WITH INT CONFIG
+    vars:
+        path: '{{ room }}/{{ location }}/{{ device }}/'     
+    
+    tasks: 
+      - name: Create a directory if it does not exist
+        file:
+           path: ./config_archive/{{ path }}
+           state: directory
+           mode: '0755'
+
+      - name: Generate Configuration for CCNA
+        template:
+          src: ccna_base_{{ model }}.j2
+          dest: config_archive/{{ path }}base.cfg
+
+  #    - name: Generate Configuration for CCNP
+  #      template:
+  #        src: ccnp_base_{{ model }}.j2
+  #        dest: config_archive/{{ path }}base.cfg
+    
+  #    - name: create  file
+  #      file:
+  #        state: touch
+  #        path: ./config_archive/{{ room }}/{{ location }}/{{ device }}_{{ location }}_base.tar
+      
+      - name: Create a tar archive of a CCNA/CCNP base config file.
+        archive:
+          path: 
+          - ./config_archive/{{ room }}/{{ location }}/{{ device }}/base.cfg
+      #    - ./config_archive/{{ room }}/{{ location }}/{{ device }}/{{ device }}_base_ccnp.cfg
+   #       dest: ./config_archive/{{ room }}/{{ location }}/{{ device }}/{{ device }}_{{ location }}_base.tar      
+          dest: ./config_archive/{{ room }}/{{ location }}/{{ device }}/base.tar                
+          format: tar
+          force_archive: true
+
+  #    - name: create  file
+  #      file:
+  #        state: touch
+  #        path: ./config_archive/{{ room }}_all_base.tar
+
+      - name: Create a tar archive of a CCNA/CCNP base config file.
+        archive:
+          path: ./config_archive/{{ room }}     
+          dest: ./config_archive/{{ room }}_all_base.tar      
+          format: tar
+          force_archive: true
+#- name: Create a bz2 archive of multiple files, rooted at /path
+#  community.general.archive:
+#    path:
+#   - /path/to/foo
+#    - /path/wong/foo
+#    dest: /path/file.tar.bz2
+#    format: bz2          
+
+#copy tftp://192.168.136.100/rm108.tar flash:
+
+
+#copy tftp://10.136.136.201/rm108.tar flash:
+
+
+#archive tar /xtract flash:/rm108.tar flash:/new-configs
+
+

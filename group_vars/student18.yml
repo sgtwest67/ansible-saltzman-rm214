@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R18
+sw_hostname: STUDENT_SW18
+mpls_hostname: MPLS-NODE-18
+#vlan:
+sw_lan_subnet: 118
+sw_router_subnet: 218
+rtr_30x_subnet: 318
+#ip_address:
+student_identifier: 18
+ipv6_student_identifier: '18'
+ipv6_301_identifier: 18
+ip_401_identifier: 1.8
+ip_5xx_identifier: 68
+l10_ip_add: '22.18.18.10'
+g001_ip_add: 148
+dist_mpls_node: 48
+#tunnels:
+tunnel_key_5930x: 28
+student_pe: 18
+modelo: 'NoTIME4$hoWt1m15'
+# END ANSIBLE MANAGED BLOCK

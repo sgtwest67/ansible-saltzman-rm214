@@ -1,0 +1,45 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+
+    tasks:
+ #   - name: create  file
+ #     file:
+ #       state: touch
+ #       path: ./configs/testing.yml
+  
+    #  - name: Insert/Update configuration using a local file and validate it
+    #    blockinfile:
+    #      block: "{{ lookup('mputty', 'student_01_mputty_ansible_tree.xml') }}"
+    #      dest: ./configs/testing2.yml
+    #      backup: yes
+
+      - name: Insert/Update block text into existing file
+       # (it might be better to copy files into /etc/network/interfaces.d/)
+        blockinfile:
+          # DEFINE LOCATION OF FILE
+          path: ./group_vars/{{ location }}.yml
+          #
+          block: |
+            ---
+            rtr_hostname: STUDENT_R1
+            sw_hostname: STUDENT_SW1
+            mpls_hostname: MPLS-NODE-1
+            #vlan:
+            sw_lan_subnet: 101
+            sw_router_subnet: 201
+            rtr_30x_subnet: 301
+            #ip_address:
+            student_identifier: 1
+            ipv6_student_identifier: '01'
+            ipv6_301_identifier: 1
+            ip_401_identifier: 0.1
+            ip_5xx_identifier: 51
+            l10_ip_add: '22.18.10.1'
+            g001_ip_add: 131
+            dist_mpls_node: 31
+            #tunnels:
+            tunnel_key_5930x: 11
+            student_pe: 1
+            modelo: 'sUbZ3Ro$moK3r!18'

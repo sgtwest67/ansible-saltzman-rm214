@@ -1,0 +1,200 @@
+Building configuration...
+
+
+Current configuration : 3593 bytes
+!
+! Last configuration change at 15:31:41 UTC Fri Sep 17 2021 by cisco
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name ccnp.lab
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+ipv6 unicast-routing
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+license udi pid ISR4331/K9 sn FDO21370LVL
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username cisco privilege 15 secret 9 $9$1EYvMqgeWzUxQE$uejsRN14FZ5qu.gNNAxQS55CElW02l1CiAHrNII.CoQ
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback3
+ ip address 172.19.3.3 255.255.255.248
+!
+interface Loopback33
+ ip address 172.19.33.3 255.255.255.224
+!
+interface GigabitEthernet0/0/0
+ ip address 172.30.34.3 255.255.255.248
+ negotiation auto
+ ipv6 address FE80::44 link-local
+ ospfv3 26 ipv4 area 1
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/1.100
+ encapsulation dot1Q 100
+ ip address 192.168.100.2 255.255.255.252
+!
+interface GigabitEthernet0/0/1.200
+ encapsulation dot1Q 200
+ ip address 192.168.200.2 255.255.255.252
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface Serial0/2/0
+ no ip address
+ shutdown
+!
+interface Serial0/2/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.136.136.11 255.255.255.0
+ negotiation auto
+!
+router ospfv3 26
+ !
+ address-family ipv4 unicast
+  redistribute bgp 64889
+  distribute-list 34 in
+ exit-address-family
+!
+router bgp 64889
+ bgp log-neighbor-changes
+ bgp redistribute-internal
+ network 172.19.3.0 mask 255.255.255.248
+ network 172.19.33.0 mask 255.255.255.224
+ neighbor 192.168.40.1 remote-as 64596
+ neighbor 192.168.40.1 ebgp-multihop 5
+ neighbor 192.168.40.1 update-source Loopback3
+ neighbor 192.168.40.1 route-map LP in
+ neighbor 192.168.200.1 remote-as 64889
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+ip route 0.0.0.0 0.0.0.0 172.30.34.4
+ip route 192.168.40.0 255.255.254.0 192.168.100.1
+!
+ip ssh version 2
+!
+access-list 1 permit 10.1.1.0 0.0.0.63
+access-list 34 deny   172.24.44.0 0.0.0.255
+access-list 34 permit any
+!
+!
+route-map LP permit 10 
+ match ip address 1
+ set local-preference 164
+!
+route-map LP permit 20 
+!
+!
+!
+control-plane
+!
+banner motd ^C
+* Challenge_Lab_ENARSI_R3_BUGS - configured by nornir *
+^C
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+parser config cache interface
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 15
+ logging synchronous
+ login
+ transport input all
+line vty 16 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end

@@ -1,0 +1,138 @@
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname {{ rtr_hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+clock timezone EST -5 0
+clock summer-time EST recurring
+!
+no ip domain lookup
+ip domain name netman-lab.net
+!
+subscriber templating
+! 
+ipv6 unicast-routing
+ipv6 multicast-routing
+!
+interface Loopback0
+ description SOURCE FOR TUNNEL {{ sw_lan_subnet }}
+ no ip address
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:CE33:C{{ sw_lan_subnet }}:1000::1/128
+!
+interface Tunnel59{{ rtr_30x_subnet }}
+ no ip address
+ ipv6 address FC00::{{ sw_lan_subnet }}:A002/122
+ ipv6 enable
+ ipv6 mtu 1392
+ ipv6 nhrp authentication n3tm@n19
+ ipv6 nhrp network-id 11159{{ rtr_30x_subnet }}
+ ipv6 nhrp nhs FC00::{{ sw_lan_subnet }}:A001 nbma 2001:E42C:23AB:F00D::2{{ ipv6_student_identifier }}9 multicast
+ ospfv3 network point-to-multipoint
+ ospfv3 hello-interval 10
+ ospfv3 dead-interval 40
+ ospfv3 cost 2600
+ ospfv3 flood-reduction
+ ospfv3 {{ rtr_30x_subnet }} ipv6 area {{ student_identifier }}
+ tunnel source GigabitEthernet0/0/0.{{ rtr_30x_subnet }}
+ tunnel mode gre multipoint ipv6
+ tunnel key 201912{{ tunnel_key_5930x }}
+ tunnel path-mtu-discovery
+!
+interface GigabitEthernet0/0/0
+ description PHYSICAL INTERFACE TO RTR_FARM_SWITCH 
+ no ip address
+ negotiation auto
+ no shutdown
+!
+interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ description OSPFv2 LINK TO STUDENT SWITCH {{ student_identifier }}
+ encapsulation dot1Q {{ sw_router_subnet }}
+ ip address 22.18.{{ sw_router_subnet }}.2 255.255.255.248
+ ip ospf network point-to-point
+!
+interface GigabitEthernet0/0/0.{{ rtr_30x_subnet }}
+ description POINT-TO-POINT TO NODE_{{ student_identifier }}
+ encapsulation dot1Q {{ rtr_30x_subnet }}
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::1/64
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 22.255.0.{{ sw_router_subnet }} 255.255.254.0
+ negotiation auto
+!
+router ospfv3 {{ rtr_30x_subnet }}
+ router-id 1.0.1.{{ student_identifier }}
+ !
+ address-family ipv4 unicast
+ exit-address-family
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf {{ student_identifier }}
+ router-id 1.0.1.{{ student_identifier }}
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ network 22.18.{{ sw_router_subnet }}.0 0.0.0.7 area {{ student_identifier }}
+!
+ip http client source-interface GigabitEthernet0
+ip route vrf Mgmt-intf 22.17.17.0 255.255.255.224 22.255.1.254
+!
+ip access-list standard SNMP-VTY_ACL
+ permit 22.255.0.1
+ permit 22.17.17.0 0.0.0.31
+ permit 22.18.{{ sw_lan_subnet }}.0 0.0.0.7
+logging host 22.18.{{ sw_lan_subnet }}.3
+ipv6 route 2001:CE33:C254:1E01::FF{{ ipv6_301_identifier }}/128 FC00::1{{ ipv6_student_identifier }}:A001
+ipv6 route 2001:E42C:23AB:F00D::/64 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::2
+ipv6 route ::/0 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::2
+!
+!
+snmp-server engineID local 1234567890
+snmp-server group GROUP v3 priv 
+snmp-server view NETMAN iso included
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+line vty 5 15
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+!
+ntp master 2
+!
+!
+end

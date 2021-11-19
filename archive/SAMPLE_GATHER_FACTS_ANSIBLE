@@ -1,0 +1,99 @@
+ok: [instructor_01_r1] => 
+
+{"ansible_facts":
+
+ {
+
+"ansible_net_all_ipv4_addresses": ["10.136.136.161"], "ansible_net_all_ipv6_addresses": [], "ansible_net_api": "cliconf", "ansible_net_filesystems": ["bootflash:"], 
+"ansible_net_filesystems_info": {"bootflash:": {"spacefree_kb": 2455728.0, "spacetotal_kb": 3156716.0}}, "ansible_net_gather_network_resources": [], 
+"ansible_net_gather_subset": ["interfaces", "default", "hardware"], 
+"ansible_net_hostname": "R1", 
+"ansible_net_image": "bootflash:isr4300-universalk9.16.06.05.SPA.bin", 
+"ansible_net_interfaces":
+ 
+ {"GigabitEthernet0": 
+ {"bandwidth": 1000000, 
+ "description": null, 
+ "duplex": "Full", 
+ "ipv4": [{"address": "10.136.136.161", "subnet": "24"}], 
+ "lineprotocol": "up", 
+ "macaddress": "f8b7.e2f0.c96d", 
+ "mediatype": "RJ45", 
+ "mtu": 1500, 
+ "operstatus": "up", 
+ "type": "RP management port"}, 
+ 
+ "GigabitEthernet0/0/0": 
+ {"bandwidth": 1000000, 
+ "description": null, 
+ "duplex": "Full", 
+ "ipv4": [], 
+ "lineprotocol": "down", 
+ "macaddress": "f8b7.e2f0.c8de", 
+ "mediatype": "Auto Select", 
+ "mtu": 1500, 
+ "operstatus": "administratively down", 
+ "type": "ISR4331-3x1GE"}, 
+
+ "GigabitEthernet0/0/1": 
+ {"bandwidth": 1000000, 
+ "description": null, 
+ "duplex": "Full", 
+ "ipv4": [], 
+ "lineprotocol": "down", 
+ "macaddress": "f8b7.e2f0.c8df", 
+ "mediatype": "RJ45", 
+ "mtu": 1500, "operstatus": 
+ "administratively down", 
+ "type": "ISR4331-3x1GE"}, 
+
+ "GigabitEthernet0/0/2": 
+ {"bandwidth": 1000000, 
+ "description": null, 
+ "duplex": "Full", 
+ "ipv4": [], 
+ "lineprotocol": "down", 
+ "macaddress": "f8b7.e2f0.c8e0", 
+ "mediatype":
+  "unknown media type", 
+  "mtu": 1500, "operstatus": 
+  "administratively down",
+   "type": "ISR4331-3x1GE"}, 
+
+ "Serial0/1/0": 
+ {"bandwidth": 2000, 
+ "description": null, 
+ "duplex": null, 
+ "ipv4": [], 
+ "lineprotocol": "down", 
+ "macaddress": null, 
+ "mediatype": null, 
+ "mtu": 1500, "operstatus": 
+ "administratively down", 
+ "type": null}, 
+
+ "Serial0/1/1": 
+ {"bandwidth": 2000, 
+ "description": null, 
+ "duplex": null, 
+ "ipv4": [], 
+ "lineprotocol": "down", 
+ "macaddress": null, 
+ "mediatype": null, 
+ "mtu": 1500, 
+ "operstatus": "administratively down", 
+ "type": null}}, 
+
+ "ansible_net_iostype": "IOS-XE", 
+ "ansible_net_memfree_mb": 771892.34375,
+ "ansible_net_memtotal_mb": 1795979.8515625, 
+ "ansible_net_model": "ISR4331/K9",
+ "ansible_net_neighbors": {}, 
+ "ansible_net_python_version": "3.6.9", 
+ "ansible_net_serialnum": "FLM2140Y06X", 
+ "ansible_net_system": "ios", 
+ "ansible_net_version": "16.06.05", 
+ "ansible_network_resources": {}}, "changed": false
+
+
+ }

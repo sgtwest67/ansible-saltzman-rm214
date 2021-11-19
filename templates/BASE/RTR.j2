@@ -1,0 +1,169 @@
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname {{ rtr_hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+
+!
+
+vrf definition Mgmt-intf
+
+ !
+
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret cisco
+!
+no aaa new-model
+!
+!
+!
+no ip domain lookup
+ip domain name netman-lab.net
+!
+!
+subscriber templating
+!
+ipv6 unicast-routing
+ipv6 multicast-routing
+!
+!
+multilink bundle-name authenticated
+!
+!
+crypto pki trustpoint TP-self-signed-384781698
+
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-384781698
+ revocation-check none
+ rsakeypair TP-self-signed-384781698
+!
+!
+crypto pki certificate chain TP-self-signed-384781698
+!
+!
+license udi pid ISR4331/K9 sn FLM23390A3T
+license accept end user agreement
+license boot suite FoundationSuiteK9
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+
+!
+username cisco privilege 15 secret cisco
+!
+redundancy
+ mode none
+!
+!
+interface Loopback0
+ description SOURCE FOR TUNNEL {{ sw_lan_subnet }}
+ no ip address
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:CE33:C{{ sw_lan_subnet }}:1000::1/128
+
+!
+!
+!
+interface GigabitEthernet0/0/0
+ description PHYSICAL INTERFACE TO RTR_FARM_SWITCH
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ description OSPFv2 LINK TO STUDENT SWITCH {{ student_identifier }}
+ encapsulation dot1Q {{ sw_router_subnet }}
+ ip address 22.18.{{ sw_router_subnet }}.2 255.255.255.248
+!
+interface GigabitEthernet0/0/0.{{ rtr_30x_subnet }}
+ description POINT-TO-POINT TO NODE_{{ student_identifier }}
+ encapsulation dot1Q {{ rtr_30x_subnet }}
+ ipv6 address FE80::{{ student_identifier }} link-local
+ ipv6 address 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::1/64
+!
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ negotiation auto
+!
+
+interface GigabitEthernet0/0/2
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0
+ description MGMT LINK TO CORE SWITCH
+ vrf forwarding Mgmt-intf
+ ip address 22.255.0.{{ sw_router_subnet }} 255.255.254.0
+ negotiation auto
+!
+!
+router ospfv3 {{ rtr_30x_subnet }}
+ router-id 1.0.1.{{ student_identifier }}
+ !
+ address-family ipv4 unicast
+ exit-address-family
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf {{ student_identifier }}
+ router-id 1.0.1.{{ student_identifier }}
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/0.{{ sw_router_subnet }}
+ network 22.18.{{ sw_router_subnet }}.0 0.0.0.7 area {{ student_identifier }}
+
+!
+ip forward-protocol nd
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip http client source-interface GigabitEthernet0
+ip route vrf Mgmt-intf 22.17.17.0 255.255.255.224 22.255.1.254
+!
+ip ssh version 2
+!
+!
+ip access-list standard SNMP-VTY_ACL
+ permit 22.255.0.1
+ permit 22.17.17.0 0.0.0.31
+ permit 22.18.{{ sw_lan_subnet }}.0 0.0.0.7
+!
+ipv6 route 2001:CE33:C254:1E01::FF{{ ipv6_301_identifier }}/128 FC00::1{{ ipv6_student_identifier }}:A001
+ipv6 route 2001:E42C:23AB:F00D::/64 2001:AA0{{ ipv6_301_identifier }}:AB02:AC02::2
+!
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+line vty 5 15
+ access-class SNMP-VTY_ACL in
+ login local
+ transport input telnet ssh
+!
+!
+!
+end

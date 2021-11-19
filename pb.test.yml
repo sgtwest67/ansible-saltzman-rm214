@@ -1,0 +1,38 @@
+     - hosts: all_student_sw_mpls
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: yes
+
+       tasks:
+        
+        - name: REMOVE FILE PROMPTING 
+          ios_config:
+            lines:
+            - file prompt quiet 
+
+          block:
+            - name: SAVE BASE CONFIG
+              ios_command:
+                commands:   
+                  - command: copy run flash:/netman/base/base.cfg         
+                  - command: mkdir flash:netman
+                #prompt: 'Create directory filename [netman]?'
+                #answer: "\r"
+                  - command: mkdir flash:netman/base
+                #prompt: 'Create directory filename [netman/base]?'
+                #answer: "\r"
+          rescue:
+            - name: CREATE DIRECTORY
+              ios_command:
+                commands:
+                  - command: mkdir flash:netman
+                  - command: mkdir flash:netman/base
+                #prompt: '[confirm]'
+                #answer: "\r"
+
+
+
+
+
+
+

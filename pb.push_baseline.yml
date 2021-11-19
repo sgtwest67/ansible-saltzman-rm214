@@ -1,0 +1,23 @@
+---    
+- hosts: all_pods
+  connection: network_cli
+  gather_facts: no
+  ignore_errors: yes
+
+  tasks:
+  - name: CHANGE TFTP PARAMETERS
+    ios_config:
+      commands:
+        - "ip ssh source-interface G0" 
+        - "ip tftp source-interface G0"
+        - "ip tftp blocksize 8192"
+
+  - name: COPY BASELINE TO NETMAN DIR
+    ios_command:
+      commands: 
+#        - command: "copy tftp://10.136.136.201/isr4300-universalk9.16.06.05.SPA.bin flash:/isr4300-universalk9.16.06.05.SPA.bin"
+#        - command: "copy tftp://10.136.136.201/cat3k_caa-universalk9.16.06.01.SPA.bin flash:/cat3k_caa-universalk9.16.06.01.SPA.bin"
+        - command: "copy tftp://22.17.17.30/base.cfg bootflash:netman/base/base.cfg"
+          prompt: "[confirm]"
+          answer: "\r"
+#      timeout: "2000"

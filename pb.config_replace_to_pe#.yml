@@ -1,0 +1,42 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no 
+    vars:
+        path: 'templates/pe_template/{{ correct_config }}/{{ device }}'  
+
+    vars_prompt:
+      - name: correct_config
+        prompt: Please enter the correct PE number to build the baseline.... | PEx | i.e PE1 |
+        private: no
+
+    tasks:
+      - pause:
+          prompt: "Please enter the Battle_Buddy Student Number... | 1-20 |" 
+        register: prompt_result
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') or battle_buddy is undefined
+        run_once: True
+        no_log: false
+      - set_fact:
+          battle_buddy: "{{ prompt_result.user_input }}"
+
+      - pause:
+          prompt: "Please enter the Assigned Battle_Buddy VLAN | 3-12 |" 
+        register: prompt_result2
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') or battle_buddy is undefined
+        run_once: True
+        no_log: false
+      - set_fact:
+          vlan_value: "{{ prompt_result2.user_input }}"
+          
+      - name: render a Jinja2 template onto an IOS device
+        ios_config:
+          src: '{{ path }}.j2'
+
+#      - name: configurable backup path
+#        ios_config:
+#          src: ios_template.j2
+#          backup: yes
+#          backup_options:
+#            filename: backup.cfg
+#            dir_path: /home/user

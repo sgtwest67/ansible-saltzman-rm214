@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R7
+sw_hostname: STUDENT_SW7
+mpls_hostname: MPLS-NODE-7
+#vlan:
+sw_lan_subnet: 107
+sw_router_subnet: 207
+rtr_30x_subnet: 307
+#ip_address:
+student_identifier: 7
+ipv6_student_identifier: '07'
+ipv6_301_identifier: 7
+ip_401_identifier: 0.7
+ip_5xx_identifier: 57
+l10_ip_add: '22.18.10.7'
+g001_ip_add: 137
+dist_mpls_node: 37
+#tunnels:
+tunnel_key_5930x: 17
+student_pe: 7
+modelo: 'sL1ngBL@DE045837'
+# END ANSIBLE MANAGED BLOCK

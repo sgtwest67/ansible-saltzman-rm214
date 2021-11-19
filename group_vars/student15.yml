@@ -1,0 +1,23 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+---
+rtr_hostname: STUDENT_R15
+sw_hostname: STUDENT_SW15
+mpls_hostname: MPLS-NODE-15
+#vlan:
+sw_lan_subnet: 115
+sw_router_subnet: 215
+rtr_30x_subnet: 315
+#ip_address:
+student_identifier: 15
+ipv6_student_identifier: '15'
+ipv6_301_identifier: 'f'
+ip_401_identifier: 1.5
+ip_5xx_identifier: 65
+l10_ip_add: '22.18.15.10'
+g001_ip_add: 145
+dist_mpls_node: 45
+#tunnels:
+tunnel_key_5930x: 25
+student_pe: 15
+modelo: 'DryRo@$t3D@lmnD$'
+# END ANSIBLE MANAGED BLOCK

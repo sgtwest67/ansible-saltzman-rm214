@@ -1,0 +1,32 @@
+---
+- hosts: all_student_pc
+  gather_facts: no
+  ignore_errors: no
+  vars:
+    ansible_user: student
+    ansible_password: CiscoLabs2018!!
+    ansible_connection: winrm
+    ansible_port: 5985
+    ansible_winrm_transport: ntlm
+
+  tasks:
+  - name: WAIT FOR PC TO BECOME REACHABLE
+    wait_for_connection:
+      delay: 10
+      timeout: 60
+
+  - name: COPY NME FOLDER TO DESKTOP- BE PATIENT
+    win_copy:
+      src: ../NME_CLASS
+      dest: C:\Users\Student\Desktop\
+      recurse: yes
+      purge: yes
+      force: yes
+
+  - name: COPY STUDENT PE TO NME FOLDER 
+    win_copy:
+      src: ../NME_PE_File/ST-{{ student_pe }}_PE_Checklist
+      dest: C:\Users\Student\Desktop\NME_CLASS\
+      recurse: yes
+      purge: yes
+      force: yes

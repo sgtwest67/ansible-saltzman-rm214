@@ -1,0 +1,321 @@
+Building configuration...
+
+Current configuration : 7175 bytes
+!
+! Last configuration change at 15:26:26 UTC Fri Sep 17 2021 by cisco
+!
+version 16.6
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+!
+hostname D1
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$sUIfsB68Uqce5r$tCaARZpg.gratFSdopNtBOp9LEJ8QrXG24JovapeE8E
+!
+no aaa new-model
+switch 1 provision ws-c3650-24ts
+!
+!
+!
+!
+ip routing
+!
+!
+!
+no ip domain lookup
+ip domain name ccnp.lab
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+cpp system-default
+!
+!
+!
+diagnostic bootup level minimal
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+username cisco privilege 15 secret 9 $9$1EYvMqgeWzUxQE$uejsRN14FZ5qu.gNNAxQS55CElW02l1CiAHrNII.CoQ
+username instructor privilege 15 secret 9 $9$YBcNNZMrfGYSYH$XDw1U8i7vijz6Vtb5WV2ozXR8Sa93OYIjqiFlv7whZ2
+!
+redundancy
+ mode sso
+!
+!
+!
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data, LOGGING
+class-map match-any system-cpp-default
+  description DHCP Snooping, EWLC control, EWCL data
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, Crypto Control, Exception, EGR Exception, NFL SAMPLED DATA, Gold Pkt, RPF Failed
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control, FSS
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map match-any system-cpp-police-control-low-priority
+  description General punt
+class-map match-any non-client-nrt-class
+class-map match-any system-cpp-police-routing-control
+  description Routing control
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+!
+policy-map system-cpp-policy
+ class system-cpp-police-data
+  police rate 600 pps
+ class system-cpp-police-sys-data
+  police rate 100 pps
+ class system-cpp-police-sw-forward
+  police rate 1000 pps
+ class system-cpp-police-multicast
+  police rate 500 pps
+ class system-cpp-police-multicast-end-station
+  police rate 2000 pps
+ class system-cpp-police-punt-webauth
+  police rate 1000 pps
+ class system-cpp-police-l2-control
+  police rate 500 pps
+ class system-cpp-police-routing-control
+  police rate 1800 pps
+ class system-cpp-police-control-low-priority
+  police rate 200 pps
+ class system-cpp-police-l2lvx-control
+  police rate 1000 pps
+ class system-cpp-police-topology-control
+  police rate 13000 pps
+ class system-cpp-police-dot1x-auth
+  police rate 1000 pps
+ class system-cpp-police-protocol-snooping
+  police rate 2000 pps
+ class system-cpp-police-forus
+  police rate 1000 pps
+ class system-cpp-default
+  police rate 1000 pps
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 192.168.40.1 255.255.254.0
+!
+interface Loopback1
+ ip address 192.168.42.1 255.255.254.0
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ ip address 10.136.136.13 255.255.255.0
+ no ip route-cache
+ speed 1000
+ negotiation auto
+!
+interface GigabitEthernet1/0/1
+ description LINK TO R1
+ no switchport
+ ip address 10.1.0.254 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf 7 area 0
+!
+interface GigabitEthernet1/0/2
+ description LINK TO ALS2
+ no switchport
+ ip address 192.168.100.1 255.255.255.252
+!
+interface GigabitEthernet1/0/3
+!
+interface GigabitEthernet1/0/4
+!
+interface GigabitEthernet1/0/5
+!
+interface GigabitEthernet1/0/6
+!
+interface GigabitEthernet1/0/7
+!
+interface GigabitEthernet1/0/8
+!
+interface GigabitEthernet1/0/9
+!
+interface GigabitEthernet1/0/10
+!
+interface GigabitEthernet1/0/11
+ description LINK 1 TO DLS2
+ no switchport
+ ip address 192.168.11.1 255.255.255.252
+ ip access-group BLOCKER in
+!
+interface GigabitEthernet1/0/12
+ description LINK 2 TO DLS2
+ no switchport
+ ip address 192.168.12.1 255.255.255.252
+!
+interface GigabitEthernet1/0/13
+!
+interface GigabitEthernet1/0/14
+!
+interface GigabitEthernet1/0/15
+!
+interface GigabitEthernet1/0/16
+!
+interface GigabitEthernet1/0/17
+!
+interface GigabitEthernet1/0/18
+!
+interface GigabitEthernet1/0/19
+!
+interface GigabitEthernet1/0/20
+!
+interface GigabitEthernet1/0/21
+!
+interface GigabitEthernet1/0/22
+!
+interface GigabitEthernet1/0/23
+!
+interface GigabitEthernet1/0/24
+!
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+!
+router eigrp 98
+ network 192.168.11.0 0.0.0.3
+ redistribute static route-map 1
+ redistribute ospf 7 metric 10000000 0 255 1 1500
+!
+router ospf 7
+ redistribute eigrp 98 subnets route-map LABX
+ default-information originate
+!
+router bgp 64596
+ bgp log-neighbor-changes
+ network 192.168.40.0 mask 255.255.254.0
+ network 192.168.42.0 mask 255.255.254.0
+ aggregate-address 192.168.40.0 255.255.252.0 summary-only
+ redistribute ospf 7 match internal external 2
+ neighbor 172.19.3.3 remote-as 64889
+ neighbor 172.19.3.3 ebgp-multihop 5
+ neighbor 172.19.3.3 update-source Loopback0
+!
+ip forward-protocol nd
+ip http server
+ip http secure-server
+ip tftp source-interface GigabitEthernet0/0
+ip route 0.0.0.0 0.0.0.0 192.168.100.2
+ip route 172.19.3.3 255.255.255.255 192.168.100.2
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+ip access-list extended BLOCKER
+ deny   ip host 10.2.98.49 host 172.31.1.157
+ permit ip any any
+ip access-list extended CLEAR
+ permit ip 10.2.98.48 0.0.0.3 host 172.31.1.157
+!
+!
+ip prefix-list LAB1 seq 5 permit 10.2.98.48/30
+access-list 1 permit 4.0.0.0 0.0.0.255
+access-list 101 permit ip host 10.2.98.49 host 172.31.1.157
+access-list 101 deny   ip any any
+!
+route-map LABX permit 10 
+ match ip address prefix-list LAB1
+!
+route-map 1 permit 10 
+ match ip address 1
+!
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+!
+vstack
+banner motd ^C
+* Challenge_Lab_ENARSI_D1_BUGS - configured by nornir *
+^C
+alias exec reset.now tclsh flash:ccnp/enarsi/reset.tbc
+alias exec enarsi.lab tclsh flash:ccnp/scripts/enarsi-lab.tcl
+alias exec enarsi.soft tclsh flash:ccnp/scripts/enarsi-soft.tcl
+alias exec reset.hard tclsh flash:ccnp/scripts/reset.tbc
+alias exec reset.soft config replace flash:ccnp/base/base.cfg
+parser config cache interface
+!
+line con 0
+ logging synchronous
+ login local
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input all
+line vty 5 15
+ logging synchronous
+ no login
+ transport input all
+line vty 16 97
+ logging synchronous
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+!
+end

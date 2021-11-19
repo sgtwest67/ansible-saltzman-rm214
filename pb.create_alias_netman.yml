@@ -1,0 +1,59 @@
+---    
+     - hosts: all_student_routers
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: yes
+
+       tasks:
+
+        - name: CREATE DIRECTORY & SAVE BASE CONFIG 
+          ios_command:
+            commands:            
+              - command: mkdir bootflash:netman
+                prompt: 'Create directory filename [netman]?'
+                answer: "\r"
+              - command: mkdir bootflash:netman/base
+                prompt: 'Create directory filename [netman/base]?'
+                answer: "\r"
+              - command: copy run bootflash:/netman/base/base.cfg
+                prompt: '[confirm]'
+                answer: "\r"
+              - config t
+              - command: alias exec reset.soft config replace bootflash:/netman/base/base.cfg force
+              - command: do wr
+                prompt: '[confirm]'
+                answer: "\r"
+
+     - hosts: all_student_sw_mpls
+       connection: network_cli
+       gather_facts: no
+       ignore_errors: yes
+
+       tasks:
+        
+        - name: REMOVE FILE PROMPTING 
+          ios_config:
+            lines:
+            - file prompt quiet 
+
+        - name: CREATE DIRECTORY & SAVE BASE CONFIG 
+          
+          ios_command:
+            commands:            
+              - command: mkdir flash:netman
+                #prompt: 'Create directory filename [netman]?'
+                #answer: "\r"
+              - command: mkdir flash:netman/base
+                #prompt: 'Create directory filename [netman/base]?'
+                #answer: "\r"
+              - command: copy run flash:/netman/base/base.cfg
+                #prompt: '[confirm]'
+                #answer: "\r"
+
+        - name: CREATE ALIAS
+          ios_config:
+            lines: 
+            - alias exec reset.soft config replace flash:/netman/base/base.cfg force
+            - do copy run flash:/netman/base/base.cfg
+            save_when: modified
+            

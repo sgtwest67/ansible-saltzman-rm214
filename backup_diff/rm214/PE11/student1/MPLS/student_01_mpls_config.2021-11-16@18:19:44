@@ -1,0 +1,463 @@
+Building configuration...
+
+Current configuration : 12322 bytes
+!
+! Last configuration change at 17:07:12 UTC Tue Nov 16 2021 by cisco
+!
+version 16.9
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname MPLS-NODE-1
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition TWO-01
+ rd 100:1
+ route-target export 100:1
+ route-target import 0:1
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$Uv3G$uFFlp1.kOkH9l9E0SU.fC1
+!
+no aaa new-model
+switch 1 provision ws-c3650-24ts
+!
+!
+!
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+ip routing
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name netman-lab.net
+!
+!
+!
+login on-success log
+ipv6 unicast-routing
+!
+!
+!
+!
+!
+!
+!
+vtp domain switch
+vtp mode transparent
+mpls label range 1100 1199
+mpls label protocol ldp
+!
+crypto pki trustpoint TP-self-signed-1813526700
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1813526700
+ revocation-check none
+ rsakeypair TP-self-signed-1813526700
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-1813526700
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 31383133 35323637 3030301E 170D3231 31303132 31393036 
+  30305A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 38313335 
+  32363730 30308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 01008A0A 3CF9611C 91F8E971 77386095 AA9B69F2 580FB219 C3702891 
+  8A210525 622E257A 0E865006 DDBDAF3D 940EA566 8BAE871D D39C3FA0 BB9D5D74 
+  8588905C 07A3ABC5 CDBC3C14 A65A4B2B 5D9CAC1E 42029DFD F3C47859 5368D1BF 
+  0FBC0AA2 C6B7EC5B AF7590A4 6C39CD5F C5EE95B1 21A5F190 26C3A2B3 50AD7FE4 
+  59601073 8931ABE3 0A5AA0D5 8153AD11 A026C69B DD877A7C 571C6B1F 64FCF6F8 
+  0B2CE7AF B50C7592 D58F7A44 BF9C7AC6 E02885A8 65AB9DE0 E63B8034 B47C20AE 
+  DB98CBC8 C811040C 3E90BDD6 6F0A5F66 6202CCE9 8CA886DC 599E2054 27784038 
+  AC0E1434 6B7B6EE4 A2613FC4 86883F8D FBA6D404 2C054839 302F3C83 3D008619 
+  0107676F B9FB0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14C10565 B388C8D7 39EEEB7F 077331F1 3BD238E9 
+  2E301D06 03551D0E 04160414 C10565B3 88C8D739 EEEB7F07 7331F13B D238E92E 
+  300D0609 2A864886 F70D0101 05050003 82010100 1C3DF961 7D00867C 921BA89B 
+  035E93CD 53E19730 C3CDE36F EC189D9E F656F942 51F1B9C6 C16D5826 187557F1 
+  8FC63031 8B1DD0B6 7B3392BA 539DE92F 7D4754A7 89C87E47 282D47D6 864D5AA2 
+  6787F71D 6271E71A CF79610D F72DECCF 6B0A3F6F BB836ABE 5BD93362 406D7A7B 
+  98A8A7B8 68B5160C 47EBE15F 84B49BD6 58E3CD34 10BF893F 2A135704 9BDA2E53 
+  501C1CDD 3D34E013 754ABF64 498ABD09 53280626 E9744A05 443A8A7E 543F9B0C 
+  F6CBC002 5BE64B17 CF729EA5 BEBBA66E 5619936E 626C58EA 50592A30 178C6F8C 
+  2B479281 CAF7CC57 D8F1ADC6 2552E075 7ECBF943 6CE36EAA B03A44E0 7D0C0640 
+  80725055 5E7ECD00 37388F83 F03D2360 6D67136A
+  	quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+  	quit
+!
+license boot level ipservicesk9
+!
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+!
+username cisco privilege 15 secret 5 $1$xsT7$RJ/RQBhr9Syulmpm2k7r2.
+!
+redundancy
+ mode sso
+!
+!
+!
+!
+!
+transceiver type all
+ monitoring
+!
+vlan 2-3 
+!
+!
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data, LOGGING
+class-map match-any system-cpp-default
+  description Inter FED, EWLC control, EWLC data
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, High Rate App, Exception, EGR Exception, NFL SAMPLED DATA, RPF Failed
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map match-any system-cpp-police-stackwise-virt-control
+  description Stackwise Virtual
+class-map match-any non-client-nrt-class
+class-map match-any system-cpp-police-routing-control
+  description Routing control and Low Latency
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+class-map match-any system-cpp-police-dhcp-snooping
+  description DHCP snooping
+class-map match-any system-cpp-police-system-critical
+  description System Critical and Gold Pkt
+!
+policy-map system-cpp-policy
+!
+pseudowire-class PW-S1
+ encapsulation mpls
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 22.20.0.1 255.255.255.255
+ ipv6 enable
+ ospfv3 1000 ipv4 area 25
+!
+interface GigabitEthernet0/0
+ description MGMT LINK TO CORE SWITCH
+ vrf forwarding Mgmt-vrf
+ ip address 22.255.0.31 255.255.254.0
+ no ip route-cache
+ negotiation auto
+!
+interface GigabitEthernet1/0/1
+ description TRUNK TO MLS-FARM_SWITCH PORT 1
+ no switchport
+ ip address 22.20.31.6 255.255.255.248
+ ipv6 enable
+ mpls ip
+ ospfv3 1000 ipv4 area 25
+!
+interface GigabitEthernet1/0/2
+ no switchport
+ no ip address
+ no keepalive
+ xconnect 22.20.0.99 101 encapsulation mpls pw-class PW-S1
+!
+interface GigabitEthernet1/0/3
+ switchport access vlan 3
+ switchport mode dot1q-tunnel
+ switchport nonegotiate
+ no cdp enable
+!
+interface GigabitEthernet1/0/4
+ no switchport
+ vrf forwarding TWO-01
+ ip address 172.26.201.2 255.255.255.252
+!
+interface GigabitEthernet1/0/5
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/6
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/7
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/8
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/9
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/10
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/11
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/12
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/14
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/15
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/16
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/17
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/18
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/19
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/21
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/22
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/23
+ switchport access vlan 2
+ switchport mode access
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet1/0/24
+ switchport access vlan 2
+ switchport trunk allowed vlan 3
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospfv3 1000
+ !
+ address-family ipv4 unicast
+ exit-address-family
+!
+router rip
+ !
+ address-family ipv4 vrf TWO-01
+  redistribute bgp 65222 metric 6
+  network 172.26.0.0
+  no auto-summary
+  version 2
+ exit-address-family
+!
+router bgp 65222
+ bgp router-id 22.20.0.1
+ bgp log-neighbor-changes
+ neighbor 14.195.9.0 remote-as 65222
+ neighbor 14.195.9.0 update-source Loopback0
+ neighbor 22.20.254.253 remote-as 65222
+ neighbor 22.20.254.253 password 7 120A301528583E0B6E262B03602763425F
+ neighbor 22.20.254.253 next-hop-self
+ !
+ address-family vpnv4
+  neighbor 14.195.9.0 activate
+  neighbor 14.195.9.0 send-community extended
+ exit-address-family
+ !
+ address-family ipv4 vrf TWO-01
+  redistribute rip metric 5
+ exit-address-family
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip route 0.0.0.0 0.0.0.0 22.20.31.1
+ip route vrf Mgmt-vrf 22.17.17.30 255.255.255.255 22.255.1.254
+!
+!
+ip access-list standard SNMP-VTY_ACL
+ permit 22.255.0.1
+ permit 22.17.17.0 0.0.0.31
+ permit 22.18.101.0 0.0.0.7
+!
+!
+!
+mpls ldp router-id Loopback0 force
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+alias exec RESET tclsh 2020_mpls1_base.tcl
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ access-class SNMP-VTY_ACL in vrf-also
+ login local
+ transport input telnet ssh
+line vty 5 15
+ access-class SNMP-VTY_ACL in vrf-also
+ login local
+ transport input telnet ssh
+!
+!
+!
+!
+!
+!
+!
+end

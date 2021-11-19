@@ -1,0 +1,93 @@
+---
+  - hosts: all_pods
+    connection: network_cli
+    gather_facts: no
+    vars:
+        path: 'baseline/{{ correct_config }}/{{ location }}/'  
+
+    vars_prompt:
+      - name: correct_config
+        prompt: Please enter the correct PE number to build the baseline.... | PEx | i.e PE1 |
+        private: no   
+    
+    tasks: 
+      - pause:
+          prompt: "Please enter the Battle_Buddy Student Number... | 1-20 |" 
+        register: prompt_result
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') 
+        run_once: True
+        no_log: false
+      - set_fact:
+         battle_buddy: "{{ prompt_result.user_input }}"
+        ignore_errors: True
+
+      - pause:
+          prompt: "Please enter the Assigned Battle_Buddy VLAN | 3-12 |" 
+        register: prompt_result2
+        when: (correct_config == 'PE6') or (correct_config == 'PE7') or (correct_config == 'PE7') or (correct_config == 'PE8') or (correct_config == 'PE9') or (correct_config == 'PE10') or (correct_config == 'PE11') or (correct_config == 'PE12') 
+        run_once: True
+        no_log: false
+      - set_fact:
+          vlan_value: "{{ prompt_result2.user_input }}"
+        ignore_errors: True
+          
+      - name: Create a directory if it does not exist
+        file:
+           path: ./configs/{{ path }}
+           state: directory
+           mode: '0755'
+
+      - name: Generate Configuration for NETMAN
+        template:
+  #        src: pe_template/{{ correct_config }}/{{ device }}.j2
+          dest: configs/{{ path }}/base.cfg
+          src: templates/BASE/{{ device }}.j2
+
+  #    - name: Generate Configuration for CCNP
+  #      template:
+  #        src: ccnp_base_{{ model }}.j2
+  #        dest: config_archive/{{ path }}base.cfg
+    
+  #    - name: create  file
+  #      file:
+  #        state: touch
+  #        path: ./config_archive/{{ room }}/{{ location }}/{{ device }}_{{ location }}_base.tar
+      
+#      - name: Create a tar archive of a CCNA/CCNP base config file.
+#        archive:
+#          path: 
+#          - ./config_archive/{{ room }}/{{ location }}/{{ device }}/base.cfg
+      #    - ./config_archive/{{ room }}/{{ location }}/{{ device }}/{{ device }}_base_ccnp.cfg
+   #       dest: ./config_archive/{{ room }}/{{ location }}/{{ device }}/{{ device }}_{{ location }}_base.tar      
+#          dest: ./config_archive/{{ room }}/{{ location }}/{{ device }}/base.tar                
+#          format: tar
+#          force_archive: true
+
+  #    - name: create  file
+  #      file:
+  #        state: touch
+  #        path: ./config_archive/{{ room }}_all_base.tar
+
+#      - name: Create a tar archive of a CCNA/CCNP base config file.
+#        archive:
+#          path: ./config_archive/{{ room }}     
+#          dest: ./config_archive/{{ room }}_all_base.tar      
+#          format: tar
+#          force_archive: true
+#- name: Create a bz2 archive of multiple files, rooted at /path
+#  community.general.archive:
+#    path:
+#   - /path/to/foo
+#    - /path/wong/foo
+#    dest: /path/file.tar.bz2
+#    format: bz2          
+
+#copy tftp://192.168.136.100/rm108.tar flash:
+
+
+#copy tftp://10.136.136.201/rm108.tar flash:
+
+
+#archive tar /xtract flash:/rm108.tar flash:/new-configs
+
+

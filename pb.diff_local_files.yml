@@ -1,0 +1,26 @@
+---
+  - hosts: localhost
+    gather_facts: no 
+    vars:
+      room: rm214
+
+    vars_prompt:
+      - name: correct_config
+        prompt: Please enter the correct PE number for comparison.... | PEx | i.e PE1 |
+        private: no
+
+    tasks:
+      - name: "Only show diff between two files."
+        copy:
+#          src: 'templates/pe_template/BASE/RTR'
+#          src: "backup_diff/{{ room }}/{{ correct_config }}/student1/RTR/student_01_rtr"
+#          dest: 'templates/pe_template/{{ correct_config }}/RTR.j2'
+
+     #     src: "backup_diff/{{ room }}/{{ correct_config }}/student1/SW/student_01_sw"
+     #     dest: 'templates/pe_template/{{ correct_config }}/SW.j2'
+     #     dest: "backup_diff/{{ room }}/{{ correct_config }}/student2/SW/student_02_sw"
+
+          src: 'templates/BASE/R'
+          dest: 'templates/BASE/RTR.j2'
+        check_mode: yes
+        diff: yes
